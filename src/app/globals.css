@@ -4,6 +4,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --animate-theme-icon: theme-icon 0.35s ease-out;
+  @keyframes theme-icon {
+    from {
+      opacity: 0;
+      scale: 0.5;
+      rotate: -90deg;
+    }
+    to {
+      opacity: 1;
+      scale: 1;
+      rotate: 0deg;
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -129,5 +145,6 @@
   }
   html {
     @apply font-sans;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
