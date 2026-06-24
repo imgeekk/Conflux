@@ -61,15 +61,17 @@ export async function getSpacesByWorkspaceId(workspaceId: string) {
 export async function getSpaceById(spaceId: string) {
   const space = await prisma.space.findUnique({
     where: { id: spaceId },
-    include : { workspace: true },
+    include: { workspace: true },
   });
   return space;
 }
 
-
 // member services
 
-export async function getMemberByUserIdAndWorkspaceId(userId: string, workspaceId: string) {
+export async function getMemberByUserIdAndWorkspaceId(
+  userId: string,
+  workspaceId: string,
+) {
   const member = await prisma.member.findUnique({
     where: { userId_workspaceId: { userId, workspaceId } },
   });
@@ -77,6 +79,23 @@ export async function getMemberByUserIdAndWorkspaceId(userId: string, workspaceI
 }
 
 // document services
+
+export async function createDocument(
+  title: string,
+  content: string,
+  spaceId: string,
+  authorId: string,
+) {
+  const document = await prisma.document.create({
+    data: {
+      title,
+      content,
+      spaceId,
+      authorId,
+    },
+  });
+  return document;
+}
 
 export async function getDocumentsBySpaceId(spaceId: string) {
   const docs = await prisma.document.findMany({
@@ -86,6 +105,47 @@ export async function getDocumentsBySpaceId(spaceId: string) {
     include: { author: true },
   });
   return docs;
+}
+
+export async function getDocumentById(docId: string) {
+  const doc = await prisma.document.findUnique({
+    where: { id: docId },
+    include: {
+      author: true,
+      space: true,
+      chunks: { select: { id: true } },
+    },
+  });
+  return doc;
+}
+
+export async function updateDocument(
+  docId: string,
+  title?: string,
+  content?: string,
+) {
+  const updated = await prisma.document.update({
+    where: { id: docId },
+    data: {
+      ...(title !== undefined && { title: title.trim() }),
+      ...(content !== undefined && { content }),
+    },
+  });
+  return updated;
+}
+
+export async function deleteDocument(docId: string) {
+  await prisma.document.delete({ where: { id: docId } });
+}
+
+// chunk services
+
+export async function deleteChunks(docId: string) {
+  await prisma.chunk.deleteMany({
+    where: {
+      documentId: docId
+    }
+  });
 }
 
 // question services
