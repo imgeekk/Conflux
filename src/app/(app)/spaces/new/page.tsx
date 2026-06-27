@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspace } from "@/lib/workspace-context";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
@@ -16,35 +15,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateSpace } from "@/hooks/use-spaces";
 
-export default function NewSpacePage() {
+export default function Page() {
   const router = useRouter();
   const { workspace } = useWorkspace();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    mutate: createSpace,
+    isPending,
+    isError,
+  } = useCreateSpace(workspace?.id ?? "");
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!workspace) return;
-    setLoading(true);
-    setError("");
-
-    const res = await fetch("/api/spaces", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, description, workspaceId: workspace.id }),
-    });
-
-    if (res.ok) {
-      const space = await res.json();
-      router.push(`/spaces/${space.id}`);
-    } else {
-      const data = await res.json();
-      setError(data.error ?? "Something went wrong");
-      setLoading(false);
-    }
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    createSpace(
+      { workspaceId: workspace.id, name, description },
+      {
+        onSuccess: (space) => {
+          router.push(`/spaces/${space.id}`);
+        },
+        onError: (error) => {
+          console.error("Failed to create space:", error);
+        },
+      }
+    );
   }
 
   return (
@@ -69,19 +67,13 @@ export default function NewSpacePage() {
       <Card>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {error && (
-              <p className="text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-2">
-                {error}
-              </p>
-            )}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">
                 Space name
               </label>
               <Input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
                 required
                 autoFocus
                 placeholder="e.g. Engineering, Product, Operations"
@@ -95,15 +87,19 @@ export default function NewSpacePage() {
                 </span>
               </label>
               <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                name="description"
                 rows={3}
                 placeholder="What kind of knowledge lives here?"
               />
             </div>
+            {isError && (
+              <p className="text-xs text-destructive bg-destructive/10 border border-destructive px-3 py-2">
+                {isError || "Failed to create space. Please try again."}
+              </p>
+            )}
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={loading || !workspace}>
-                {loading ? "Creating..." : "Create space"}
+              <Button type="submit" disabled={isPending || !workspace}>
+                {isPending ? "Creating..." : "Create space"}
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/home">Cancel</Link>

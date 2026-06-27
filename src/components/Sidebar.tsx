@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
-import { useWorkspace } from "@/lib/workspace-context";
 import {
   Sidebar as SidebarPrimitive,
   SidebarHeader,
@@ -29,22 +27,14 @@ import {
   ArrowDownIcon,
   FolderIcon,
 } from "@phosphor-icons/react";
+import { useWorkspace } from "@/lib/workspace-context";
+import { useSpaces } from "@/hooks/use-spaces";
 
-type Space = {
-  id: string;
-  name: string;
-  slug: string;
-};
-
-export default function AppSidebar({
-  initialSpaces = [],
-}: {
-  initialSpaces?: Space[];
-}) {
+export default function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { workspace } = useWorkspace();
-  const [spaces] = useState(initialSpaces);
+  const { data: spaces = [], isLoading } = useSpaces(workspace?.id ?? "");
 
   const navItems = [
     { href: "/home", label: "Home", icon: HouseIcon },
