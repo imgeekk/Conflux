@@ -204,7 +204,7 @@ export default async function SpacePage({
                 >
                   <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
                     <div className="w-8 h-8 rounded-lg bg-chart-4/10 flex items-center justify-center shrink-0">
-                      <QuestionIcon className="w-4 h-4 text-chart-4" />
+                      <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
