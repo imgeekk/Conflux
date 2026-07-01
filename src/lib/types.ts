@@ -17,20 +17,10 @@ export type ApiSpace = {
   workspaceId: string;
 };
 
-export type CreateSpaceInput = {
-  name: string;
-  description?: string;
-  workspaceId: string;
-};
-
 export type ApiWorkspace = {
   id: string;
   name: string;
   slug: string;
-};
-
-export type CreateWorkspaceInput = {
-  name: string;
 };
 
 export type ApiDocument = {
@@ -43,8 +33,44 @@ export type ApiDocument = {
   updatedAt: string;
 };
 
+export type ApiQuestion = {
+  id: string;
+  title: string;
+  body: string | null;
+  spaceId: string;
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateWorkspaceInput = {
+  name: string;
+};
+
+export type CreateSpaceInput = {
+  name: string;
+  description?: string;
+  workspaceId: string;
+};
+
 export type CreateDocumentInput = {
   title: string;
   content?: string;
   spaceId: string;
+};
+
+export type CreateQuestionInput = {
+  title: string;
+  body?: string;
+  spaceId: string;
+};
+
+export type UpdateDocumentInput = {
+  title?: string;
+  content?: string;
+};
+
+export type UpdateQuestionInput = {
+  title?: string;
+  body?: string;
 };

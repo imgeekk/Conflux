@@ -159,3 +159,51 @@ export async function getQuestionsBySpaceId(spaceId: string) {
   });
   return questions;
 }
+
+export async function createQuestion(
+  title: string,
+  body: string,
+  spaceId: string,
+  authorId: string,
+) {
+  const question = await prisma.question.create({
+    data: {
+      title,
+      body,
+      spaceId,
+      authorId,
+    },
+  });
+  return question;
+}
+
+export async function getQuestionById(questionId: string) {
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    include: {
+      space: { select: { workspaceId: true } },
+      author: {select: { id: true, name: true, image: true } },
+      answers: true,
+    },
+  });
+  return question;
+}
+
+export async function updateQuestion(
+  questionId: string,
+  title?: string,
+  body?: string,
+) {
+  const updated = await prisma.question.update({
+    where: { id: questionId },
+    data: {
+      ...(title !== undefined && { title: title.trim() }),
+      ...(body !== undefined && { body }),
+    },
+  });
+  return updated;
+}
+
+export async function deleteQuestion(questionId: string) {
+  await prisma.question.delete({ where: { id: questionId } });
+}
