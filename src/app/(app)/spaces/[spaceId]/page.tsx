@@ -188,7 +188,7 @@ export default async function SpacePage({
 
                 <Button variant="secondary" asChild>
                   <Link href={`/spaces/${spaceId}/questions/new`}>
-                    Ask the first one
+                    Ask your first question
                   </Link>
                 </Button>
               </CardContent>

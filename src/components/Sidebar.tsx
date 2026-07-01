@@ -97,7 +97,11 @@ export default function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {spaces.length === 0 ? (
+              {isLoading ? (
+                <p className="px-2 py-1 text-xs text-sidebar-foreground/50">
+                  Loading Spaces...
+                </p>
+              ) : spaces.length === 0 ? (
                 <p className="px-2 py-1 text-xs text-sidebar-foreground/50">
                   No spaces yet
                 </p>
