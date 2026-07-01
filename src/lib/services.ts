@@ -102,7 +102,7 @@ export async function getDocumentsBySpaceId(spaceId: string) {
     where: { spaceId },
     orderBy: { updatedAt: "desc" },
     take: 10,
-    include: { author: true },
+    include: { author: { select: { id: true, name: true, image: true } } },
   });
   return docs;
 }
@@ -111,8 +111,8 @@ export async function getDocumentById(docId: string) {
   const doc = await prisma.document.findUnique({
     where: { id: docId },
     include: {
-      author: true,
-      space: true,
+      author: { select: { id: true, name: true, image: true } },
+      space: { select: { id: true, name: true, workspaceId: true } },
       chunks: { select: { id: true } },
     },
   });
@@ -143,8 +143,8 @@ export async function deleteDocument(docId: string) {
 export async function deleteChunks(docId: string) {
   await prisma.chunk.deleteMany({
     where: {
-      documentId: docId
-    }
+      documentId: docId,
+    },
   });
 }
 

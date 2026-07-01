@@ -9,12 +9,11 @@ import {
 } from "@/lib/services";
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ spaceId: string }> },
+  req: NextRequest
 ) {
   try {
     const session = await requireSession();
-    const { spaceId } = await params;
+    const spaceId = req.nextUrl.searchParams.get("spaceId");
 
     if (!spaceId) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
