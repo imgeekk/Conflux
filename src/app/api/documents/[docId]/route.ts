@@ -6,7 +6,7 @@ import {
   getMemberByUserIdAndWorkspaceId,
   updateDocument,
 } from "@/lib/services";
-// import { embedDocument } from "@/lib/rag"
+import { embedDocument } from "@/lib/rag"
 
 export async function GET(
   _req: NextRequest,
@@ -61,7 +61,7 @@ export async function PATCH(
     const updated = await updateDocument(docId, title, content);
 
     if (content !== undefined && content.trim()) {
-      //   await embedDocument(updated.id, updated.title, content)
+      await embedDocument(updated.id, updated.title, content)
     }
 
     return NextResponse.json(updated);

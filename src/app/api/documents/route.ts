@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
-// import { embedDocument } from "@/lib/rag"
+import { embedDocument } from "@/lib/rag"
 import {
   getMemberByUserIdAndWorkspaceId,
   getSpaceById,
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     );
 
     if (content?.trim()) {
-      //   await embedDocument(document.id, document.title, content)
+        await embedDocument(document.id, document.title, content)
     }
 
     return NextResponse.json(document);
