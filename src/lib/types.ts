@@ -74,3 +74,16 @@ export type UpdateQuestionInput = {
   title?: string;
   body?: string;
 };
+
+export type ProseMirrorNode = {
+  type: string
+  attrs?: Record<string, unknown>
+  content?: ProseMirrorNode[]
+  text?: string
+  marks?: { type: string; attrs?: Record<string, unknown> }[]
+}
+
+export type ProseMirrorDoc = {
+  type: "doc"
+  content: ProseMirrorNode[]
+}
