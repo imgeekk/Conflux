@@ -29,6 +29,7 @@ import {
 } from "@phosphor-icons/react";
 import { useWorkspace } from "@/lib/workspace-context";
 import { useSpaces } from "@/hooks/use-spaces";
+import { Skeleton } from "./ui/skeleton";
 
 export default function AppSidebar() {
   const pathname = usePathname();
@@ -98,9 +99,11 @@ export default function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {isLoading ? (
-                <p className="px-2 py-1 text-xs text-sidebar-foreground/50">
-                  Loading Spaces...
-                </p>
+                <>
+                <Skeleton className="h-8 w-full mb-2" />
+                <Skeleton className="h-8 w-full mb-2" />
+                <Skeleton className="h-8 w-full mb-2" />
+               </> 
               ) : spaces.length === 0 ? (
                 <p className="px-2 py-1 text-xs text-sidebar-foreground/50">
                   No spaces yet

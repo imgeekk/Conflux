@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { MagnifyingGlassIcon } from "@phosphor-icons/react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "./ui/button"
+import { ThemeToggle } from "./ui/theme-toggle"
 
 export default function Topbar() {
   const router = useRouter()
@@ -17,6 +18,7 @@ export default function Topbar() {
         <MagnifyingGlassIcon className="w-3.5 h-3.5 shrink-0" />
         Ask anything or search docs…
       </Button>
+      <ThemeToggle />
     </header>
   )
 }

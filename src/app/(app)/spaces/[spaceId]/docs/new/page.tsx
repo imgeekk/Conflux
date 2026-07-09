@@ -8,6 +8,7 @@ import Link from "next/link"
 import { TipTapEditor } from "@/components/tiptap-editor"
 import { useCreateDocument } from "@/hooks/use-documents"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner";
 
 export default function NewDocPage() {
   const router = useRouter()
@@ -52,8 +53,8 @@ export default function NewDocPage() {
         />
 
         <div className="flex gap-3 pt-1">
-          <Button type="submit" disabled={isPending || !title.trim()}>
-            {isPending ? "Saving..." : "Create document"}
+          <Button type="submit" disabled={isPending || !title.trim()} className="w-30">
+            {isPending ? <Spinner /> : "Create document"}
           </Button>
           <Button variant="outline" asChild>
             <Link href={`/spaces/${spaceId}`}>Cancel</Link>
