@@ -1,6 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
-import { ApiDocument, CreateDocumentInput } from "@/lib/types";
+import {
+  ApiDocument,
+  CreateDocumentInput,
+  UpdateDocumentInput,
+} from "@/lib/types";
 
 export function useDocuments(spaceId: string) {
   return useQuery({
@@ -37,5 +41,43 @@ export function useCreateDocument() {
         queryKey: queryKeys.documents.bySpace(doc.spaceId),
       });
     },
+  });
+}
+
+export function useDocument(docId: string) {
+  return useQuery({
+    queryKey: queryKeys.documents.byId(docId),
+    queryFn: async () => {
+      const res = await fetch(`/api/documents/${docId}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch document");
+      }
+      return res.json() as Promise<ApiDocument>;
+    },
+    enabled: !!docId,
+  });
+}
+
+export function useUpdateDocument(docId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: UpdateDocumentInput) => {
+      const res = await fetch(`/api/documents/${docId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to update document");
+      }
+      return res.json() as Promise<ApiDocument>;
+    },
+    onSuccess: (doc) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.documents.byId(doc.id),
+      });
+    }
   });
 }

@@ -10,6 +10,7 @@ export const queryKeys = {
   documents: {
     all: ["documents"] as const,
     bySpace: (spaceId: string) => ["documents", spaceId] as const,
+    byId: (docId: string) => ["document", docId] as const,
   },
   questions: {
     all: ["questions"] as const,

@@ -61,7 +61,8 @@ export async function PATCH(
     const updated = await updateDocument(docId, title, content);
 
     if (content !== undefined && content.trim()) {
-      await embedDocument(updated.id, updated.title, content)
+      // no await to embed so that it happens in the background and doesn't block the response time
+      embedDocument(updated.id, updated.title, content)
     }
 
     return NextResponse.json(updated);
