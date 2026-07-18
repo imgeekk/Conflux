@@ -130,11 +130,13 @@ model Document {
 model Chunk {
   id         String                  @id @default(cuid())
   content    String
-  documentId String
+  documentId String?
+  answerId   String?
   embedding  Unsupported("vector(768)")?
   createdAt  DateTime                @default(now())
 
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  document  Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  answer    Answer?   @relation(fields: [answerId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -163,6 +165,7 @@ model Answer {
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   author   User?    @relation(fields: [authorId], references: [id])
+  chunks   Chunk[]
 }
 
 model Tag {
