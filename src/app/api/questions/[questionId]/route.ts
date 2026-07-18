@@ -69,9 +69,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, body } = await req.json();
+    const { text } = await req.json();
 
-    const updated = await updateQuestion(questionId, title, body);
+    const updated = await updateQuestion(questionId, text);
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

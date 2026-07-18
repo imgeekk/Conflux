@@ -161,15 +161,13 @@ export async function getQuestionsBySpaceId(spaceId: string) {
 }
 
 export async function createQuestion(
-  title: string,
-  body: string,
+  text: string,
   spaceId: string,
   authorId: string,
 ) {
   const question = await prisma.question.create({
     data: {
-      title,
-      body,
+      text,
       spaceId,
       authorId,
     },
@@ -191,14 +189,12 @@ export async function getQuestionById(questionId: string) {
 
 export async function updateQuestion(
   questionId: string,
-  title?: string,
-  body?: string,
+  text?: string,
 ) {
   const updated = await prisma.question.update({
     where: { id: questionId },
     data: {
-      ...(title !== undefined && { title: title.trim() }),
-      ...(body !== undefined && { body }),
+      ...(text !== undefined && { text: text.trim() }),
     },
   });
   return updated;
@@ -206,4 +202,21 @@ export async function updateQuestion(
 
 export async function deleteQuestion(questionId: string) {
   await prisma.question.delete({ where: { id: questionId } });
+}
+
+// answer services
+
+export async function createAnswer(
+  questionId: string,
+  body: string,
+  authorId?: string
+) {
+  const answer = await prisma.answer.create({
+    data: {
+      questionId,
+      body,
+      authorId,
+    },
+  });
+  return answer;
 }

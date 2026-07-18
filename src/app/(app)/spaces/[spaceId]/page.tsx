@@ -208,7 +208,7 @@ export default async function SpacePage({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
-                        {q.title}
+                        {q.text}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         {q.author.name} · {q.answers.length} answer

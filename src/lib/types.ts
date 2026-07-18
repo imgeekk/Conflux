@@ -35,8 +35,7 @@ export type ApiDocument = {
 
 export type ApiQuestion = {
   id: string;
-  title: string;
-  body: string | null;
+  text: string;
   spaceId: string;
   authorId: string;
   createdAt: string;
@@ -60,8 +59,7 @@ export type CreateDocumentInput = {
 };
 
 export type CreateQuestionInput = {
-  title: string;
-  body?: string;
+  text: string;
   spaceId: string;
 };
 
@@ -71,8 +69,7 @@ export type UpdateDocumentInput = {
 };
 
 export type UpdateQuestionInput = {
-  title?: string;
-  body?: string;
+  text?: string;
 };
 
 export type ProseMirrorNode = {

@@ -141,8 +141,7 @@ model Chunk {
 
 model Question {
   id          String   @id @default(cuid())
-  title       String
-  body        String?
+  text       String
   spaceId     String
   authorId    String
   createdAt   DateTime @default(now())

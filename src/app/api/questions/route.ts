@@ -40,9 +40,9 @@ export async function GET(
 export async function POST(req: NextRequest) {
   try {
     const session = await requireSession();
-    const { title, body, spaceId } = await req.json();
+    const { text, spaceId } = await req.json();
 
-    if (!title?.trim() || !spaceId) {
+    if (!text?.trim() || !spaceId) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -60,8 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     const question = await createQuestion(
-      title,
-      body,
+      text,
       spaceId,
       session.user.id,
     );
