@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const member = getMemberByUserIdAndWorkspaceId(
+    const member = await getMemberByUserIdAndWorkspaceId(
       session.user.id,
       workspaceId,
     );
@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
 
     const result = await answerQuestion(query.trim(), workspaceId);
     return NextResponse.json(result);
-  } catch {
+  } catch (e) {
+    console.error("Search error:", e);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
