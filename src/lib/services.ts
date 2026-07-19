@@ -140,12 +140,20 @@ export async function deleteDocument(docId: string) {
 
 // chunk services
 
-export async function deleteChunks(docId: string) {
+export async function deleteDocumentChunks(docId: string) {
   await prisma.chunk.deleteMany({
     where: {
       documentId: docId,
     },
   });
+}
+
+export async function deleteAnswerChunks(answerId: string) {
+  await prisma.chunk.deleteMany({
+    where: {
+      answerId
+    }
+  })
 }
 
 // question services

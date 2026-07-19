@@ -1,5 +1,5 @@
 import { generateEmbedding, generateAnswer } from "@/lib/model"
-import { deleteChunks } from "./services"
+import { deleteDocumentChunks, deleteAnswerChunks } from "./services"
 import { prisma } from "@/lib/prisma"
 import type { ProseMirrorNode, ProseMirrorDoc } from "@/lib/types"
 
@@ -114,7 +114,7 @@ export async function embedDocument(
   title: string,
   content: string
 ) {
-  await deleteChunks(documentId)
+  await deleteDocumentChunks(documentId)
 
   const trimmed = content.trim()
   if (!trimmed) return
@@ -148,34 +148,92 @@ export async function embedDocument(
   }
 }
 
+export async function embedAnswer(
+  answerId: string,
+  content: string,
+  questionTitle: string
+){
+  await deleteAnswerChunks(answerId)
+
+  const trimmed = content.trim()
+  if (!trimmed) return
+
+  const chunks = buildChunksFromText(trimmed, questionTitle)
+
+  for (const chunkText of chunks) {
+    const embedding = await generateEmbedding(chunkText)
+    const vector = `[${embedding.join(",")}]`
+
+    await prisma.$executeRaw`
+      INSERT INTO "Chunk" (id, content, "answerId", embedding, "createdAt")
+      VALUES (
+        gen_random_uuid()::text,
+        ${chunkText},
+        ${answerId},
+        ${vector}::vector,
+        NOW()
+      )
+    `
+  }
+}
+
 export async function searchChunks(
   query: string,
   workspaceId: string,
   limit = 5
-): Promise<{ content: string; documentId: string; documentTitle: string }[]> {
+): Promise<{ content: string; sourceId: string; sourceTitle: string; sourceType : "document" | "answer" }[]> {
   const embedding = await generateEmbedding(query)
   const vector = `[${embedding.join(",")}]`
 
-  const results = await prisma.$queryRaw<
-    { content: string; documentId: string; title: string }[]
-  >`
+  const [docResults, answerResults] = await Promise.all([
+    prisma.$queryRaw<
+    {content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+    >`
     SELECT
       c.content,
-      c."documentId",
-      d.title
+      c."documentId" AS "sourceId",
+      d.title AS "sourceTitle",
+      'document' AS "sourceType"
+      c.embedding <=> ${vector}::vector AS distance
     FROM "Chunk" c
     JOIN "Document" d ON d.id = c."documentId"
     JOIN "Space" s ON s.id = d."spaceId"
     WHERE s."workspaceId" = ${workspaceId}
+      AND c."documentId" IS NOT NULL
       AND c.embedding IS NOT NULL
-    ORDER BY c.embedding <=> ${vector}::vector
+    ORDER BY distance
     LIMIT ${limit}
-  `
+    `,
+    prisma.$queryRaw<
+    {content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+    >`
+    SELECT
+      c.content,
+      c."answerId" AS "sourceId",
+      a.title AS "sourceTitle",
+      'answer' AS "sourceType",
+      c.embedding <=> ${vector}::vector AS distance
+    FROM "Chunk" c
+    JOIN "Answer" a ON a.id = c."answerId"
+    JOIN "Question" q ON q.id = a."questionId"
+    JOIN "Space" s ON s.id = a."spaceId"
+    WHERE s."workspaceId" = ${workspaceId}
+      AND c."answerId" IS NOT NULL
+      AND c.embedding IS NOT NULL
+    ORDER BY distance
+    LIMIT ${limit}
+    `,
+  ])
 
-  return results.map((r) => ({
+  const mergedResults = [...docResults, ...answerResults]
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, limit)
+
+  return mergedResults.map((r) => ({
     content: r.content,
-    documentId: r.documentId,
-    documentTitle: r.title,
+    sourceId: r.sourceId,
+    sourceTitle: r.sourceTitle,
+    sourceType: r.sourceType as "document" | "answer",
   }))
 }
 
@@ -184,7 +242,7 @@ export async function answerQuestion(
   workspaceId: string
 ): Promise<{
   answer: string
-  sources: { documentId: string; documentTitle: string }[]
+  sources: { sourceId: string; sourceTitle: string; sourceType: "document" | "answer" }[]
 }> {
   const chunks = await searchChunks(question, workspaceId)
 
@@ -204,9 +262,13 @@ export async function answerQuestion(
   const sources = chunks
     .filter(
       (c, i, arr) =>
-        arr.findIndex((x) => x.documentId === c.documentId) === i
+        arr.findIndex((x) => x.sourceId === c.sourceId) === i
     )
-    .map((c) => ({ documentId: c.documentId, documentTitle: c.documentTitle }))
+    .map((c) => ({
+      sourceId: c.sourceId,
+      sourceTitle: c.sourceTitle,
+      sourceType: c.sourceType,
+    }))
 
   return { answer, sources }
 }
