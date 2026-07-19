@@ -187,41 +187,41 @@ export async function searchChunks(
 
   const [docResults, answerResults] = await Promise.all([
     prisma.$queryRaw<
-    {content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+      { content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
     >`
-    SELECT
-      c.content,
-      c."documentId" AS "sourceId",
-      d.title AS "sourceTitle",
-      'document' AS "sourceType"
-      c.embedding <=> ${vector}::vector AS distance
-    FROM "Chunk" c
-    JOIN "Document" d ON d.id = c."documentId"
-    JOIN "Space" s ON s.id = d."spaceId"
-    WHERE s."workspaceId" = ${workspaceId}
-      AND c."documentId" IS NOT NULL
-      AND c.embedding IS NOT NULL
-    ORDER BY distance
-    LIMIT ${limit}
+      SELECT
+        c.content,
+        c."documentId" AS "sourceId",
+        d.title AS "sourceTitle",
+        'document' AS "sourceType",
+        c.embedding <=> ${vector}::vector AS distance
+      FROM "Chunk" c
+      JOIN "Document" d ON d.id = c."documentId"
+      JOIN "Space" s ON s.id = d."spaceId"
+      WHERE s."workspaceId" = ${workspaceId}
+        AND c."documentId" IS NOT NULL
+        AND c.embedding IS NOT NULL
+      ORDER BY distance
+      LIMIT ${limit}
     `,
     prisma.$queryRaw<
-    {content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+      { content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
     >`
-    SELECT
-      c.content,
-      c."answerId" AS "sourceId",
-      a.title AS "sourceTitle",
-      'answer' AS "sourceType",
-      c.embedding <=> ${vector}::vector AS distance
-    FROM "Chunk" c
-    JOIN "Answer" a ON a.id = c."answerId"
-    JOIN "Question" q ON q.id = a."questionId"
-    JOIN "Space" s ON s.id = a."spaceId"
-    WHERE s."workspaceId" = ${workspaceId}
-      AND c."answerId" IS NOT NULL
-      AND c.embedding IS NOT NULL
-    ORDER BY distance
-    LIMIT ${limit}
+      SELECT
+        c.content,
+        c."answerId" AS "sourceId",
+        q.text AS "sourceTitle",
+        'answer' AS "sourceType",
+        c.embedding <=> ${vector}::vector AS distance
+      FROM "Chunk" c
+      JOIN "Answer" a ON a.id = c."answerId"
+      JOIN "Question" q ON q.id = a."questionId"
+      JOIN "Space" s ON s.id = q."spaceId"
+      WHERE s."workspaceId" = ${workspaceId}
+        AND c."answerId" IS NOT NULL
+        AND c.embedding IS NOT NULL
+      ORDER BY distance
+      LIMIT ${limit}
     `,
   ])
 
