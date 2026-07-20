@@ -17,6 +17,7 @@ import {
 } from "@phosphor-icons/react";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
+import Loader from "./Loader";
 interface SearchSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -97,7 +98,7 @@ export default function SearchSheet({ open, onOpenChange }: SearchSheetProps) {
           {loading && (
             <div className="flex-col items-center justify-center mt-8">
               <div className="flex items-center justify-center">
-                <Spinner />
+              <Loader size="sm" />
               </div>
               <p className="text-xs text-center text-muted-foreground mt-2">
                 Searching your knowledge base for answers...
