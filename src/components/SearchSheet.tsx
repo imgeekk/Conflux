@@ -16,6 +16,7 @@ import {
   QuestionMarkIcon,
 } from "@phosphor-icons/react";
 import { Spinner } from "@/components/ui/spinner";
+import Link from "next/link";
 interface SearchSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -29,6 +30,7 @@ export default function SearchSheet({ open, onOpenChange }: SearchSheetProps) {
       sourceId: string;
       sourceTitle: string;
       sourceType: "document" | "answer";
+      spaceId: string;
     }[]
   >([]);
   const [loading, setLoading] = useState(false);
@@ -119,11 +121,29 @@ export default function SearchSheet({ open, onOpenChange }: SearchSheetProps) {
                         className="flex items-center gap-2 text-sm text-muted-foreground"
                       >
                         {s.sourceType === "document" ? (
-                          <FileIcon className="w-3.5 h-3.5 shrink-0" />
+                          <Link
+                            href={`/spaces/${s.spaceId}/docs/${s.sourceId}`}
+                            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Button
+                              variant="outline"
+                              size="icon"
+                            >
+                              <FileIcon className="w-3.5 h-3.5" />
+                            </Button>
+                            <span className="truncate">{s.sourceTitle}</span>
+                          </Link>
                         ) : (
-                          <QuestionMarkIcon className="w-3.5 h-3.5 shrink-0" />
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                            >
+                            <QuestionMarkIcon className="w-3.5 h-3.5 shrink-0" />
+                            </Button>
+                            <span className="truncate">{s.sourceTitle}</span>
+                          </div>
                         )}
-                        <span className="truncate">{s.sourceTitle}</span>
                       </div>
                     ))}
                   </div>

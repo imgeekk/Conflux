@@ -181,19 +181,20 @@ export async function searchChunks(
   query: string,
   workspaceId: string,
   limit = 5
-): Promise<{ content: string; sourceId: string; sourceTitle: string; sourceType : "document" | "answer" }[]> {
+): Promise<{ content: string; sourceId: string; sourceTitle: string; sourceType : "document" | "answer", spaceId: string }[]> {
   const embedding = await generateEmbedding(query)
   const vector = `[${embedding.join(",")}]`
 
   const [docResults, answerResults] = await Promise.all([
     prisma.$queryRaw<
-      { content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+      { content: string; sourceId: string; sourceTitle: string; sourceType: string; spaceId: string; distance: number }[]
     >`
       SELECT
         c.content,
         c."documentId" AS "sourceId",
         d.title AS "sourceTitle",
         'document' AS "sourceType",
+        s.id AS "spaceId",
         c.embedding <=> ${vector}::vector AS distance
       FROM "Chunk" c
       JOIN "Document" d ON d.id = c."documentId"
@@ -205,13 +206,14 @@ export async function searchChunks(
       LIMIT ${limit}
     `,
     prisma.$queryRaw<
-      { content: string; sourceId: string; sourceTitle: string; sourceType: string; distance: number }[]
+      { content: string; sourceId: string; sourceTitle: string; sourceType: string; spaceId: string; distance: number }[]
     >`
       SELECT
         c.content,
         c."answerId" AS "sourceId",
         q.text AS "sourceTitle",
         'answer' AS "sourceType",
+        s.id AS "spaceId",
         c.embedding <=> ${vector}::vector AS distance
       FROM "Chunk" c
       JOIN "Answer" a ON a.id = c."answerId"
@@ -234,6 +236,7 @@ export async function searchChunks(
     sourceId: r.sourceId,
     sourceTitle: r.sourceTitle,
     sourceType: r.sourceType as "document" | "answer",
+    spaceId: r.spaceId,
   }))
 }
 
@@ -242,7 +245,7 @@ export async function answerQuestion(
   workspaceId: string
 ): Promise<{
   answer: string
-  sources: { sourceId: string; sourceTitle: string; sourceType: "document" | "answer" }[]
+  sources: { sourceId: string; sourceTitle: string; sourceType: "document" | "answer"; spaceId: string }[]
 }> {
   const chunks = await searchChunks(question, workspaceId)
 
@@ -268,6 +271,7 @@ export async function answerQuestion(
       sourceId: c.sourceId,
       sourceTitle: c.sourceTitle,
       sourceType: c.sourceType,
+      spaceId: c.spaceId,
     }))
 
   return { answer, sources }
