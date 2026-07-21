@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
 import {
+  createAnswer,
   createQuestion,
   getMemberByUserIdAndWorkspaceId,
+  getQuestionById,
   getQuestionsBySpaceId,
   getSpaceById,
 } from "@/lib/services";
+import { answerQuestion } from "@/lib/rag";
 
 export async function GET(
   req: NextRequest
@@ -64,7 +67,16 @@ export async function POST(req: NextRequest) {
       spaceId,
       session.user.id,
     );
-    return NextResponse.json(question, { status: 201 });
+
+    try{
+      const result = await answerQuestion(text, space.workspaceId);
+      await createAnswer(question.id, result.answer, true)
+    } catch (error) {
+      console.error("AI answering failed:", error);
+    }
+
+    const questionWithAnswers = await getQuestionById(question.id);
+    return NextResponse.json(questionWithAnswers, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

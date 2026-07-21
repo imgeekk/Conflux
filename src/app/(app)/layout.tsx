@@ -21,7 +21,7 @@ export default async function AppLayout({
         <Sidebar />
         <SidebarInset>
           <Topbar />
-          <main className="flex-1 overflow-y-auto p-6 bg-background text-foreground">
+          <main className="flex-1 min-h-0 p-6 bg-background text-foreground">
             {children}
           </main>
         </SidebarInset>

@@ -45,11 +45,12 @@ export default function EditDocPage() {
   }
 
   if (!doc) {
-    return <div className="max-w-4xl mx-auto">Document not found</div>;
+    return <div className="h-full overflow-y-auto"><div className="max-w-4xl mx-auto">Document not found</div></div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="h-full overflow-y-auto">
+      <div className="max-w-4xl mx-auto">
       <Link
         href={`/spaces/${spaceId}/docs/${docId}`}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -92,6 +93,7 @@ export default function EditDocPage() {
           </Button>
         </div>
       </form>
+      </div>
     </div>
   );
 }

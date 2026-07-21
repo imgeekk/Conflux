@@ -217,6 +217,7 @@ export async function deleteQuestion(questionId: string) {
 export async function createAnswer(
   questionId: string,
   body: string,
+  isAiDraft : boolean,
   authorId?: string
 ) {
   const answer = await prisma.answer.create({
@@ -224,6 +225,7 @@ export async function createAnswer(
       questionId,
       body,
       authorId,
+      isAiDraft,
     },
   });
   return answer;

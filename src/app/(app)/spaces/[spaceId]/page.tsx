@@ -63,7 +63,7 @@ export default async function SpacePage({
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
-            <Link href={`/spaces/${spaceId}/questions/new`}>
+            <Link href={`/spaces/${spaceId}/questions`}>
               <PlusIcon className="w-3.5 h-3.5" />
               Ask
             </Link>
@@ -170,7 +170,7 @@ export default async function SpacePage({
               size="xs"
               className="text-muted-foreground hover:text-foreground"
             >
-              <Link href={`/spaces/${spaceId}/questions/new`}>
+              <Link href={`/spaces/${spaceId}/questions`}>
                 Ask a question →
               </Link>
             </Button>
@@ -187,7 +187,7 @@ export default async function SpacePage({
                 </p>
 
                 <Button variant="secondary" asChild>
-                  <Link href={`/spaces/${spaceId}/questions/new`}>
+                  <Link href={`/spaces/${spaceId}/questions`}>
                     Ask your first question
                   </Link>
                 </Button>
@@ -202,7 +202,7 @@ export default async function SpacePage({
                   asChild
                   className="w-full h-auto justify-start gap-3 p-3"
                 >
-                  <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
+                  <Link href={`/spaces/${spaceId}/questions`}>
                     <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
                       <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
                     </div>

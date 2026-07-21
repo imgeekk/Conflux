@@ -42,6 +42,22 @@ export type ApiQuestion = {
   updatedAt: string;
 };
 
+export type ApiAnswer = {
+  id: string;
+  body: string;
+  questionId: string;
+  authorId: string;
+  isAiDraft: boolean;
+  isAccepted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ApiQuestionWithAnswers = ApiQuestion & {
+  answers: ApiAnswer[];
+  author: { id: string; name: string; image: string | null };
+}
+
 export type CreateWorkspaceInput = {
   name: string;
 };
