@@ -33,7 +33,7 @@ export default function QuestionsPage() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     submit();
   }
@@ -48,9 +48,8 @@ export default function QuestionsPage() {
     }
   }
   return (
-    <div className="h-full flex flex-col max-w-3xl mx-auto overflow-hidden">
-      {/* Header */}
-      <div className="shrink-0 pt-1 pb-3">
+    <div className="flex flex-col h-[calc(100dvh-6rem)] max-w-3xl mx-auto">
+      <div id="header" className="shrink-0 pt-1 pb-3">
         <Button variant="ghost" asChild size="sm">
           <Link href={`/spaces/${spaceId}`}>
             <ArrowLeftIcon className="w-4 h-4" />
@@ -58,8 +57,10 @@ export default function QuestionsPage() {
           </Link>
         </Button>
       </div>
-      {/* Feed */}
-      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 px-1 py-1">
+      <div
+        id="questions-feed"
+        className="flex-1 min-h-0 overflow-y-auto space-y-3 px-1 py-1 scrollbar-thin scrollbar-track-background scrollbar-thumb-muted-foreground/40 scrollbar-thumb-rounded-md"
+      >
         {isLoading ? (
           <div className="h-full flex items-center justify-center py-12">
             <Loader />
@@ -142,8 +143,8 @@ export default function QuestionsPage() {
           ))
         )}
       </div>
-      {/* Input */}
-      <div className="shrink-0 bg-background pt-3 pb-6">
+      <div id="input" className="shrink-0 bg-background pt-3 pb-6 relative">
+        <div className="absolute bottom-full left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
         <form onSubmit={handleSubmit}>
           <div className="relative">
             <Textarea

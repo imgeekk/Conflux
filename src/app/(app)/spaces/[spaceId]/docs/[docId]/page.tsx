@@ -19,8 +19,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
   if (!member) notFound()
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <Link
           href={`/spaces/${spaceId}`}
@@ -56,7 +55,6 @@ export default async function DocViewPage({ params }: { params: Params }) {
       </div>
 
       <TipTapEditor content={doc.content ?? undefined} readOnly />
-      </div>
     </div>
   )
 }

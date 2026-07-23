@@ -93,7 +93,6 @@ export default function EditDocPage() {
           </Button>
         </div>
       </form>
-      </div>
     </div>
   );
 }
