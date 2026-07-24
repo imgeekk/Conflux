@@ -8,6 +8,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
+import { BorderBeam } from "border-beam";
 import { Button } from "@/components/ui/button";
 import { useWorkspace } from "@/lib/workspace-context";
 import {
@@ -83,13 +84,15 @@ export default function SearchSheet({ open, onOpenChange }: SearchSheetProps) {
           </SheetDescription>
         </SheetHeader>
         <div className="flex gap-2 px-4 pb-3">
-          <Input
-            placeholder="Ask anything..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            disabled={loading}
-          />
+          <BorderBeam size="sm" theme="auto" colorVariant="ocean" className="flex-1" borderRadius={0}>
+            <Input
+              placeholder="Ask anything..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              disabled={loading}
+            />
+          </BorderBeam>
           <Button onClick={handleSubmit} disabled={loading || !query.trim()}>
             Send
           </Button>

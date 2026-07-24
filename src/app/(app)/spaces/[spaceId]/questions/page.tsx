@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import Loader from "@/components/Loader";
 import { Card, CardContent } from "@/components/ui/card";
+import { BorderBeam } from "border-beam";
 export default function QuestionsPage() {
   const params = useParams<{ spaceId: string }>();
   const spaceId = params.spaceId;
@@ -147,21 +148,23 @@ export default function QuestionsPage() {
         <div className="absolute bottom-full left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
         <form onSubmit={handleSubmit}>
           <div className="relative">
-            <Textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  submit();
-                }
-              }}
-              placeholder="Ask a question..."
-              rows={3}
-              maxLength={500}
-              disabled={isPending}
-              className="resize-none pr-12"
-            />
+            <BorderBeam size="md" theme="auto" colorVariant="ocean" borderRadius={0}>
+              <Textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    submit();
+                  }
+                }}
+                placeholder="Ask a question..."
+                rows={3}
+                maxLength={500}
+                disabled={isPending}
+                className="resize-none pr-12"
+              />
+            </BorderBeam>
             <Button
               type="submit"
               size="icon"
