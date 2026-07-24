@@ -59,7 +59,7 @@ export default function QuestionsPage() {
       </div>
       <div
         id="questions-feed"
-        className="flex-1 min-h-0 overflow-y-auto space-y-3 px-1 py-1 scrollbar-thin scrollbar-track-background scrollbar-thumb-muted-foreground/40 scrollbar-thumb-rounded-md"
+        className="flex-1 min-h-0 overflow-y-auto space-y-3 px-1 py-1 feed-scrollbar-thin"
       >
         {isLoading ? (
           <div className="h-full flex items-center justify-center py-12">
