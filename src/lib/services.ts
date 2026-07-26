@@ -163,7 +163,7 @@ export async function getQuestionsBySpaceId(spaceId: string) {
     where: { spaceId },
     orderBy: { createdAt: "desc" },
     take: 10,
-    include: { author: true, answers: true },
+    include: { author: true, answers: { include: { author: true } } },
   });
   return questions;
 }
@@ -189,7 +189,7 @@ export async function getQuestionById(questionId: string) {
     include: {
       space: { select: { workspaceId: true } },
       author: { select: { id: true, name: true, image: true } },
-      answers: true,
+      answers: { include: { author: true } },
     },
   });
   return question;

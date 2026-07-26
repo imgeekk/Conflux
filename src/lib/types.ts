@@ -51,12 +51,17 @@ export type ApiAnswer = {
   isAccepted: boolean;
   createdAt: string;
   updatedAt: string;
-}
+};
+
+export type ApiAnswerWithAuthor = ApiAnswer & {
+  author: { id: string; name: string; image: string | null };
+};
 
 export type ApiQuestionWithAnswers = ApiQuestion & {
-  answers: ApiAnswer[];
+  answers: ApiAnswerWithAuthor[];
   author: { id: string; name: string; image: string | null };
-}
+};
+
 
 export type CreateWorkspaceInput = {
   name: string;
