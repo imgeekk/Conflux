@@ -242,16 +242,12 @@ export async function getAnswerById(answerId: string) {
   return answer;
 }
 
-export async function acceptAnswer(answerId: string) {
-  const answer = await prisma.answer.findUnique({
-    where: { id: answerId },
-    select: { questionId: true },
-  });
+export async function acceptAnswer(answerId: string, questionId: string) {
   const previouslyAccepted = await prisma.answer.findFirst({
     where: {
       id: { not: answerId },
       isAccepted: true,
-      questionId: answer?.questionId,
+      questionId,
     },
     select: { id: true },
   });

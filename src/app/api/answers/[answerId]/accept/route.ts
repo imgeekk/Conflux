@@ -35,7 +35,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { accepted, previouslyAcceptedId } = await acceptAnswer(answerId);
+    const { accepted, previouslyAcceptedId } = await acceptAnswer(answerId, answer.questionId);
 
     await Promise.allSettled([
         previouslyAcceptedId ? deleteAnswerChunks(previouslyAcceptedId) : Promise.resolve(),
