@@ -233,8 +233,13 @@ export async function getAnswerById(answerId: string) {
     where: { id: answerId },
     include: {
       question: {
-        select: { id: true, spaceId: true, authorId: true, text: true },
-        include: { space: { select: { workspaceId: true } } },
+        select: {
+          id: true,
+          spaceId: true,
+          authorId: true,
+          text: true,
+          space: { select: { workspaceId: true } },
+        },
       },
       author: { select: { id: true, name: true, image: true } },
     },
