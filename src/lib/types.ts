@@ -84,6 +84,10 @@ export type CreateQuestionInput = {
   spaceId: string;
 };
 
+export type CreateAnswerInput = {
+  body: string;
+}
+
 export type UpdateDocumentInput = {
   title?: string;
   content?: string;
@@ -93,15 +97,20 @@ export type UpdateQuestionInput = {
   text?: string;
 };
 
-export type ProseMirrorNode = {
-  type: string
-  attrs?: Record<string, unknown>
-  content?: ProseMirrorNode[]
-  text?: string
-  marks?: { type: string; attrs?: Record<string, unknown> }[]
+export type UpdateAnswerInput = {
+  answerId: string;
+  body?: string;
 }
 
+export type ProseMirrorNode = {
+  type: string;
+  attrs?: Record<string, unknown>;
+  content?: ProseMirrorNode[];
+  text?: string;
+  marks?: { type: string; attrs?: Record<string, unknown> }[];
+};
+
 export type ProseMirrorDoc = {
-  type: "doc"
-  content: ProseMirrorNode[]
-}
+  type: "doc";
+  content: ProseMirrorNode[];
+};
