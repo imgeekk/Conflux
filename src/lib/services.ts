@@ -151,9 +151,9 @@ export async function deleteDocumentChunks(docId: string) {
 export async function deleteAnswerChunks(answerId: string) {
   await prisma.chunk.deleteMany({
     where: {
-      answerId
-    }
-  })
+      answerId,
+    },
+  });
 }
 
 // question services
@@ -188,17 +188,14 @@ export async function getQuestionById(questionId: string) {
     where: { id: questionId },
     include: {
       space: { select: { workspaceId: true } },
-      author: {select: { id: true, name: true, image: true } },
+      author: { select: { id: true, name: true, image: true } },
       answers: true,
     },
   });
   return question;
 }
 
-export async function updateQuestion(
-  questionId: string,
-  text?: string,
-) {
+export async function updateQuestion(questionId: string, text?: string) {
   const updated = await prisma.question.update({
     where: { id: questionId },
     data: {
@@ -217,8 +214,8 @@ export async function deleteQuestion(questionId: string) {
 export async function createAnswer(
   questionId: string,
   body: string,
-  isAiDraft : boolean,
-  authorId?: string
+  isAiDraft: boolean,
+  authorId?: string,
 ) {
   const answer = await prisma.answer.create({
     data: {
@@ -229,4 +226,61 @@ export async function createAnswer(
     },
   });
   return answer;
+}
+
+export async function getAnswerById(answerId: string) {
+  const answer = await prisma.answer.findUnique({
+    where: { id: answerId },
+    include: {
+      question: {
+        select: { id: true, spaceId: true, authorId: true, text: true },
+        include: { space: { select: { workspaceId: true } } },
+      },
+      author: { select: { id: true, name: true, image: true } },
+    },
+  });
+  return answer;
+}
+
+export async function acceptAnswer(answerId: string) {
+  const answer = await prisma.answer.findUnique({
+    where: { id: answerId },
+    select: { questionId: true },
+  });
+  const previouslyAccepted = await prisma.answer.findFirst({
+    where: {
+      id: { not: answerId },
+      isAccepted: true,
+      questionId: answer?.questionId,
+    },
+    select: { id: true },
+  });
+  const [accepted, _] = await prisma.$transaction([
+    prisma.answer.update({
+      where: { id: answerId },
+      data: {
+        isAccepted: true,
+      },
+    }),
+    prisma.answer.updateMany({
+      where: { id: { not: answerId }, isAccepted: true },
+      data: { isAccepted: false },
+    }),
+  ]);
+  return { accepted, previouslyAcceptedId: previouslyAccepted?.id ?? null };
+}
+
+export async function updateAnswer(
+  answerId: string,
+  body?: string,
+  isAiDraft?: boolean,
+) {
+  const updated = await prisma.answer.update({
+    where: { id: answerId },
+    data: {
+      ...(body !== undefined && { body }),
+      ...(isAiDraft !== undefined && { isAiDraft }),
+    },
+  });
+  return updated;
 }
