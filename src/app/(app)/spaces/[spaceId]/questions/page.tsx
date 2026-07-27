@@ -9,6 +9,7 @@ import {
   QuestionMarkIcon,
   SparkleIcon,
   SmileySadIcon,
+  CheckCircleIcon,
 } from "@phosphor-icons/react";
 import { useQuestions, useCreateQuestion } from "@/hooks/use-questions";
 import { useRetryAnswer } from "@/hooks/use-retry-answer";
@@ -74,74 +75,98 @@ export default function QuestionsPage() {
             </p>
           </div>
         ) : (
-          [...questions].reverse().map((q) => (
-            <Card key={q.id}>
-              <CardContent>
-                <div className="flex items-start gap-3">
-                  <QuestionMarkIcon className="w-5 h-5 shrink-0 text-chart-2 mt-0.5" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">{q.text}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {(q as any).author?.name} ·{" "}
-                      {new Date(q.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-              {(q as any).answers?.length > 0 ? (
+          [...questions].reverse().map((q) => {
+            const isPending = (q.id as string).startsWith("pending-");
+            const answers = (q as any).answers ?? [];
+            const hasAccepted = answers.some((a: any) => a.isAccepted);
+            const cardContent = (
+              <>
                 <CardContent>
-                  <div className="pl-8 space-y-1">
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap text-primary">
-                      {(q as any).answers[0].body}
-                    </p>
-                    {(q as any).answers[0].isAiDraft && (
-                      <div className="flex items-center gap-1.5">
-                        <SparkleIcon className="w-3.5 h-3.5 text-chart-2" />
-                        <span className="text-xs text-muted-foreground">
-                          AI-generated draft
+                  <div className="flex items-start gap-3">
+                    <QuestionMarkIcon className="w-5 h-5 shrink-0 text-chart-2 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">{q.text}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {(q as any).author?.name} ·{" "}
+                        {new Date(q.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+                {answers.length > 0 ? (
+                  <CardContent>
+                    <div className="pl-8 space-y-1">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap text-primary">
+                        {answers[0].body}
+                      </p>
+                      {answers[0].isAiDraft && (
+                        <div className="flex items-center gap-1.5">
+                          <SparkleIcon className="w-3.5 h-3.5 text-chart-2" />
+                          <span className="text-xs text-muted-foreground">
+                            AI-generated draft
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                        {hasAccepted && (
+                          <span className="flex items-center gap-1 text-chart-2">
+                            <CheckCircleIcon className="w-3 h-3" weight="fill" />
+                            Accepted
+                          </span>
+                        )}
+                        <span>
+                          {answers.length} answer
+                          {answers.length !== 1 ? "s" : ""}
                         </span>
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              ) : (q.id as string).startsWith("pending-") ? (
-                <CardContent>
-                  <div className="pl-8">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Loader size="xs" />
-                      Generating answer…
                     </div>
-                  </div>
-                </CardContent>
-              ) : retryingId === q.id ? (
-                <CardContent>
-                  <div className="pl-8">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Loader size="xs" />
-                      Generating answer…
+                  </CardContent>
+                ) : isPending ? (
+                  <CardContent>
+                    <div className="pl-8">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader size="xs" />
+                        Generating answer…
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              ) : (
-                <CardContent>
-                  <div className="pl-8">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <SmileySadIcon className="w-3.5 h-3.5" />
-                      AI couldn't generate an answer
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="h-auto p-0 text-xs"
-                        onClick={() => handleRetry(q.id)}
-                      >
-                        Try again
-                      </Button>
+                  </CardContent>
+                ) : retryingId === q.id ? (
+                  <CardContent>
+                    <div className="pl-8">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader size="xs" />
+                        Generating answer…
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          ))
+                  </CardContent>
+                ) : (
+                  <CardContent>
+                    <div className="pl-8">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <SmileySadIcon className="w-3.5 h-3.5" />
+                        AI couldn't generate an answer
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="h-auto p-0 text-xs"
+                          onClick={() => handleRetry(q.id)}
+                        >
+                          Try again
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                )}
+              </>
+            );
+            return isPending ? (
+              <Card key={q.id}>{cardContent}</Card>
+            ) : (
+              <Link key={q.id} href={`/spaces/${spaceId}/questions/${q.id}`} className="block">
+                <Card>{cardContent}</Card>
+              </Link>
+            );
+          })
         )}
       </div>
       <div id="input" className="shrink-0 bg-background pt-3 pb-6 relative">
