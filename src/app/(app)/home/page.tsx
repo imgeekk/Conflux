@@ -144,7 +144,7 @@ export default async function HomePage() {
                   asChild
                   className="w-full h-auto justify-start gap-3 p-3"
                 >
-                  <Link href={`/spaces/${q.spaceId}/questions/`}>
+                   <Link href={`/spaces/${q.spaceId}/questions/${q.id}`}>
                     <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
                       <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
                     </div>

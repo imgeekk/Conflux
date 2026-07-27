@@ -195,14 +195,14 @@ export default async function SpacePage({
             </Card>
           ) : (
             <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
-              {questions.map((q) => (
+                  {questions.map((q) => (
                 <Button
                   key={q.id}
                   variant="outline"
                   asChild
                   className="w-full h-auto justify-start gap-3 p-3"
                 >
-                  <Link href={`/spaces/${spaceId}/questions`}>
+                  <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
                     <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
                       <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
                     </div>
