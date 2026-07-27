@@ -45,54 +45,59 @@ export default function EditDocPage() {
   }
 
   if (!doc) {
-    return <div className="h-full overflow-y-auto"><div className="max-w-4xl mx-auto">Document not found</div></div>;
+    return (
+      <div className="h-full overflow-y-auto">
+        <div className="max-w-4xl mx-auto">Document not found</div>
+      </div>
+    );
   }
 
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-4xl mx-auto">
-      <Link
-        href={`/spaces/${spaceId}/docs/${docId}`}
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-      >
-        <ArrowLeftIcon className="w-3.5 h-3.5" />
-        Back to document
-      </Link>
+        <Link
+          href={`/spaces/${spaceId}/docs/${docId}`}
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeftIcon className="w-3.5 h-3.5" />
+          Back to document
+        </Link>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          name="title"
-          defaultValue={doc.title}
-          onChange={() => setChanged(true)}
-          placeholder="Add document title"
-          required
-          className="text-2xl font-semibold bg-transparent border-none outline-none placeholder:text-muted-foreground/50 w-full"
-          autoFocus
-        />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="title"
+            defaultValue={doc.title}
+            onChange={() => setChanged(true)}
+            placeholder="Add document title"
+            required
+            className="text-2xl font-semibold bg-transparent border-none outline-none placeholder:text-muted-foreground/50 w-full"
+            autoFocus
+          />
 
-        <TipTapEditor
-          content={doc.content ?? ""}
-          onChange={(json) => {
-            contentRef.current = json;
-            setChanged(true);
-          }}
-          placeholder="Write your document..."
-        />
+          <TipTapEditor
+            content={doc.content ?? ""}
+            onChange={(json) => {
+              contentRef.current = json;
+              setChanged(true);
+            }}
+            placeholder="Write your document..."
+          />
 
-        <div className="flex gap-3 pt-1">
-          <Button
-            type="submit"
-            disabled={isPending || !changed}
-            className="w-26"
-          >
-            {isPending ? <Spinner /> : "Save changes"}
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href={`/spaces/${spaceId}/docs/${docId}`}>Cancel</Link>
-          </Button>
-        </div>
-      </form>
+          <div className="flex gap-3 pt-1">
+            <Button
+              type="submit"
+              disabled={isPending || !changed}
+              className="w-26"
+            >
+              {isPending ? <Spinner /> : "Save changes"}
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href={`/spaces/${spaceId}/docs/${docId}`}>Cancel</Link>
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
