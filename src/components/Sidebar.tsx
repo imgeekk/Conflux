@@ -81,7 +81,6 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
 
         <SidebarGroup>
           <SidebarGroupLabel asChild>
@@ -131,7 +130,6 @@ export default function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarSeparator />
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Settings">
