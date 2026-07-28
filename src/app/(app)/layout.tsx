@@ -19,9 +19,9 @@ export default async function AppLayout({
     <WorkspaceProvider workspace={workspace}>
       <SidebarProvider>
         <Sidebar />
-        <SidebarInset>
+        <SidebarInset className="overflow-y-auto min-h-0">
           <Topbar />
-          <main className="flex-1 flex flex-col overflow-y-auto p-6 min-h-0 bg-background text-foreground">
+          <main className="flex-1 flex flex-col p-6 bg-background text-foreground">
             {children}
           </main>
         </SidebarInset>

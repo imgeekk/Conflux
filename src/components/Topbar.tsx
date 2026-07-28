@@ -8,7 +8,7 @@ import SearchSheet from "./SearchSheet"
 export default function Topbar() {
   const [searchOpen, setSearchOpen] = useState(false)
   return (
-    <header className="h-12 border-b border-muted flex items-center px-4 gap-3 bg-secondary shrink-0">
+    <header className="h-12 border-b border-muted flex items-center px-4 gap-3 bg-secondary shrink-0 sticky top-0 z-10">
       <div className="flex-1 flex items-center gap-3">
       <SidebarTrigger />
       <Button
