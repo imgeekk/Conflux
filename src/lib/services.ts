@@ -85,6 +85,7 @@ export async function createDocument(
   content: string,
   spaceId: string,
   authorId: string,
+  tagIds?: string[],
 ) {
   const document = await prisma.document.create({
     data: {
@@ -92,7 +93,15 @@ export async function createDocument(
       content,
       spaceId,
       authorId,
+      ...(tagIds?.length && {
+        tags: {
+          createMany: {
+            data: tagIds.map((tagId) => ({ tagId })),
+          },
+        },
+      }),
     },
+    include: { tags: { include: { tag: true } } },
   });
   return document;
 }
@@ -102,7 +111,10 @@ export async function getDocumentsBySpaceId(spaceId: string) {
     where: { spaceId },
     orderBy: { updatedAt: "desc" },
     take: 10,
-    include: { author: { select: { id: true, name: true, image: true } } },
+    include: {
+      author: { select: { id: true, name: true, image: true } },
+      tags: { include: { tag: true } },
+    },
   });
   return docs;
 }
@@ -114,6 +126,7 @@ export async function getDocumentById(docId: string) {
       author: { select: { id: true, name: true, image: true } },
       space: { select: { id: true, name: true, workspaceId: true } },
       chunks: { select: { id: true } },
+      tags: { include: { tag: true } },
     },
   });
   return doc;
@@ -123,13 +136,23 @@ export async function updateDocument(
   docId: string,
   title?: string,
   content?: string,
+  tagIds?: string[],
 ) {
   const updated = await prisma.document.update({
     where: { id: docId },
     data: {
       ...(title !== undefined && { title: title.trim() }),
       ...(content !== undefined && { content }),
+      ...(tagIds !== undefined && {
+        tags: {
+          deleteMany: {},
+          createMany: {
+            data: tagIds.map((tagId) => ({ tagId })),
+          },
+        },
+      }),
     },
+    include: { tags: { include: { tag: true } } },
   });
   return updated;
 }
@@ -284,4 +307,20 @@ export async function updateAnswer(
     },
   });
   return updated;
+}
+
+// tag services
+
+export async function getTags() {
+  const tags = await prisma.tag.findMany({
+    orderBy: { name: "asc" },
+  });
+  return tags;
+}
+
+export async function createTag(name: string) {
+  const tag = await prisma.tag.create({
+    data: { name: name.trim() },
+  });
+  return tag;
 }

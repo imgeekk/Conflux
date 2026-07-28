@@ -42,7 +42,7 @@ export async function PATCH(
   try {
     const session = await requireSession();
     const { docId } = await params;
-    const { title, content } = await req.json();
+    const { title, content, tagIds } = await req.json();
 
     const doc = await getDocumentById(docId);
 
@@ -58,7 +58,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const updated = await updateDocument(docId, title, content);
+    const updated = await updateDocument(docId, title, content, tagIds);
 
     if (content !== undefined && content.trim()) {
       // no await to embed so that it happens in the background and doesn't block the response time

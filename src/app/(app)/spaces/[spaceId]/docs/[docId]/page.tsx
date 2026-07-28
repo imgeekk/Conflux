@@ -1,22 +1,34 @@
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import { requireSession } from "@/lib/session"
-import { getDocumentById, getMemberByUserIdAndWorkspaceId } from "@/lib/services"
-import { ArrowLeftIcon, PencilSimpleIcon, ClockIcon, UserIcon, CubeIcon } from "@phosphor-icons/react/dist/ssr"
-import { TipTapEditor } from "@/components/tiptap-editor"
-import { Button } from "@/components/ui/button"
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { requireSession } from "@/lib/session";
+import {
+  getDocumentById,
+  getMemberByUserIdAndWorkspaceId,
+} from "@/lib/services";
+import {
+  ArrowLeftIcon,
+  PencilSimpleIcon,
+  ClockIcon,
+  UserIcon,
+  CubeIcon,
+} from "@phosphor-icons/react/dist/ssr";
+import { TipTapEditor } from "@/components/tiptap-editor";
+import { Button } from "@/components/ui/button";
 
-type Params = Promise<{ spaceId: string; docId: string }>
+type Params = Promise<{ spaceId: string; docId: string }>;
 
 export default async function DocViewPage({ params }: { params: Params }) {
-  const { spaceId, docId } = await params
-  const session = await requireSession()
+  const { spaceId, docId } = await params;
+  const session = await requireSession();
 
-  const doc = await getDocumentById(docId)
-  if (!doc) notFound()
+  const doc = await getDocumentById(docId);
+  if (!doc) notFound();
 
-  const member = await getMemberByUserIdAndWorkspaceId(session.user.id, doc.space.workspaceId)
-  if (!member) notFound()
+  const member = await getMemberByUserIdAndWorkspaceId(
+    session.user.id,
+    doc.space.workspaceId,
+  );
+  if (!member) notFound();
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -37,7 +49,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
         </Button>
       </div>
 
-      <h1 className="text-2xl font-semibold mb-3">{doc.title}</h1>
+      <h1 className="text-3xl font-semibold mb-3">{doc.title}</h1>
 
       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
         <span className="flex items-center gap-1.5">
@@ -54,7 +66,20 @@ export default async function DocViewPage({ params }: { params: Params }) {
         </span>
       </div>
 
+      {(doc as any).tags?.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-8">
+          {(doc as any).tags.map((dt: any) => (
+            <span
+              key={dt.tag.id}
+              className="inline-flex bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+            >
+              {dt.tag.name}
+            </span>
+          ))}
+        </div>
+      )}
+
       <TipTapEditor content={doc.content ?? undefined} readOnly />
     </div>
-  )
+  );
 }

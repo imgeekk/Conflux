@@ -31,6 +31,7 @@ export type ApiDocument = {
   authorId: string;
   createdAt: string;
   updatedAt: string;
+  tags: ApiTag[];
 };
 
 export type ApiQuestion = {
@@ -62,6 +63,10 @@ export type ApiQuestionWithAnswers = ApiQuestion & {
   author: { id: string; name: string; image: string | null };
 };
 
+export type ApiTag = {
+  id: string;
+  name: string;
+}
 
 export type CreateWorkspaceInput = {
   name: string;
@@ -77,6 +82,7 @@ export type CreateDocumentInput = {
   title: string;
   content?: string;
   spaceId: string;
+  tagIds?: string[];
 };
 
 export type CreateQuestionInput = {
@@ -88,9 +94,14 @@ export type CreateAnswerInput = {
   body: string;
 }
 
+export type CreateTagInput = {
+  name: string;
+}
+
 export type UpdateDocumentInput = {
   title?: string;
   content?: string;
+  tagIds?: string[];
 };
 
 export type UpdateQuestionInput = {

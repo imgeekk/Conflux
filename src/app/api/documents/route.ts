@@ -42,7 +42,7 @@ export async function GET(
 export async function POST(req: NextRequest) {
   try {
     const session = await requireSession();
-    const { title, content, spaceId } = await req.json();
+    const { title, content, spaceId, tagIds } = await req.json();
 
     if (!title?.trim() || !spaceId) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       content,
       spaceId,
       session.user.id,
+      tagIds,
     );
 
     if (content?.trim()) {

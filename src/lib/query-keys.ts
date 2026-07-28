@@ -17,4 +17,7 @@ export const queryKeys = {
     bySpace: (spaceId: string) => ["questions", spaceId] as const,
     byId: (questionId: string) => ["question", questionId] as const,
   },
+  tags: {
+    all: ["tags"] as const,
+  }
 };

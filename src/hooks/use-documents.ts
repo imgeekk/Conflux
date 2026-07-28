@@ -78,6 +78,9 @@ export function useUpdateDocument(docId: string) {
       queryClient.invalidateQueries({
         queryKey: queryKeys.documents.byId(doc.id),
       });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.documents.bySpace(doc.spaceId),
+      });
     }
   });
 }

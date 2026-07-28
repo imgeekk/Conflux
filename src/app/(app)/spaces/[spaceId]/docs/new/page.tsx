@@ -9,18 +9,20 @@ import { TipTapEditor } from "@/components/tiptap-editor"
 import { useCreateDocument } from "@/hooks/use-documents"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner";
+import { TagPicker } from "@/components/TagPicker";
 
 export default function NewDocPage() {
   const router = useRouter()
   const { spaceId } = useParams<{ spaceId: string }>()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const { mutate: createDoc, isPending } = useCreateDocument()
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     createDoc(
-      { title, content, spaceId },
+      { title, content, spaceId, tagIds: selectedTagIds },
       { onSuccess: () => router.push(`/spaces/${spaceId}`) },
     )
   }
@@ -42,7 +44,7 @@ export default function NewDocPage() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add document title"
           required
-          className="text-2xl font-semibold bg-transparent border-none outline-none placeholder:text-muted-foreground/50 w-full"
+          className="text-3xl font-semibold bg-transparent border-none outline-none placeholder:text-muted-foreground/50 w-full"
           autoFocus
         />
 
@@ -52,13 +54,24 @@ export default function NewDocPage() {
           placeholder="Write your document..."
         />
 
-        <div className="flex gap-3 pt-1">
-          <Button type="submit" disabled={isPending || !title.trim()} className="w-30">
-            {isPending ? <Spinner /> : "Create document"}
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href={`/spaces/${spaceId}`}>Cancel</Link>
-          </Button>
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4 pt-1">
+          <div className="flex-1">
+            <label className="text-sm text-muted-foreground mb-1.5 block">
+              Tags
+            </label>
+            <TagPicker
+              selectedIds={selectedTagIds}
+              onChange={setSelectedTagIds}
+            />
+          </div>
+          <div className="flex gap-3 shrink-0 sm:mt-6.5">
+            <Button type="submit" disabled={isPending || !title.trim()} className="w-30">
+              {isPending ? <Spinner /> : "Create document"}
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href={`/spaces/${spaceId}`}>Cancel</Link>
+            </Button>
+          </div>
         </div>
       </form>
     </div>
