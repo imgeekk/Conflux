@@ -32,24 +32,6 @@ body,
   background-color: var(--tt-bg-color);
 }
 
-::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--tt-scrollbar-color) transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--tt-scrollbar-color);
-  border-radius: 0;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .tiptap.ProseMirror {
   font-family: "DM Sans", sans-serif;
 }
