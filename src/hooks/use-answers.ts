@@ -17,6 +17,7 @@ export function useQuestion(questionId: string) {
       }
       return res.json() as Promise<ApiQuestionWithAnswers>;
     },
+    enabled: !!questionId,
   });
 }
 
