@@ -68,6 +68,21 @@ export type ApiTag = {
   name: string;
 }
 
+export type ApiExperScore = {
+  id: string;
+  userId: string;
+  tagId: string;
+  score: number;
+}
+
+export type ApiExpertScoreWithTag = ApiExperScore & {
+  tag: ApiTag;
+}
+
+export type ApiExpertScoreWithUser = ApiExperScore & {
+  user: { id: string; name: string; image: string | null };
+}
+
 export type CreateWorkspaceInput = {
   name: string;
 };

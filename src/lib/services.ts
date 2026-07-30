@@ -103,6 +103,13 @@ export async function createDocument(
     },
     include: { tags: { include: { tag: true } } },
   });
+
+  if (tagIds?.length) {
+    await Promise.all(
+      tagIds.map((tagId) => addExpertScore(authorId, tagId, 5)),
+    );
+  }
+
   return document;
 }
 
@@ -138,6 +145,20 @@ export async function updateDocument(
   content?: string,
   tagIds?: string[],
 ) {
+  if (tagIds !== undefined) {
+    const oldDoc = await prisma.document.findUnique({
+      where: { id: docId },
+      select: { authorId: true, tags: { select: { tagId: true } } },
+    });
+    const oldTagIds = oldDoc?.tags.map((t) => t.tagId) ?? [];
+    const removedTagIds = oldTagIds.filter((id) => !tagIds.includes(id));
+    const addedTagIds = tagIds.filter((id) => !oldTagIds.includes(id));
+    await Promise.all([
+      removedTagIds.map((tagId) => addExpertScore(oldDoc!.authorId, tagId, -5)),
+      addedTagIds.map((tagId) => addExpertScore(oldDoc!.authorId, tagId, 5)),
+    ]);
+  }
+
   const updated = await prisma.document.update({
     where: { id: docId },
     data: {
@@ -285,12 +306,32 @@ export async function acceptAnswer(answerId: string, questionId: string) {
       data: {
         isAccepted: true,
       },
+      include: {
+        question: {
+          select: {
+            space: {
+              select: {
+                documents: { select: { tags: { select: { tag: true } } } },
+              },
+            },
+          },
+        },
+      },
     }),
     prisma.answer.updateMany({
       where: { id: { not: answerId }, isAccepted: true },
       data: { isAccepted: false },
     }),
   ]);
+
+  const authorId = accepted.authorId;
+  const tagIds = accepted.question.space.documents.flatMap((doc) =>
+    doc.tags.map((t) => t.tag.id),
+  );
+  await Promise.all([
+    tagIds.map((tagId) => addExpertScore(authorId!, tagId, 10)),
+  ]);
+
   return { accepted, previouslyAcceptedId: previouslyAccepted?.id ?? null };
 }
 
@@ -323,4 +364,44 @@ export async function createTag(name: string) {
     data: { name: name.trim() },
   });
   return tag;
+}
+
+// expert tag services
+
+export async function addExpertScore(
+  userId: string,
+  tagId: string,
+  points: number,
+) {
+  const expertScore = await prisma.expertScore.upsert({
+    where: {
+      userId_tagId: { userId, tagId },
+    },
+    update: {
+      score: { increment: points },
+    },
+    create: {
+      userId,
+      tagId,
+      score: points,
+    },
+  });
+}
+
+export async function getExpertScoresByTag(tagId: string) {
+  const expertScores = await prisma.expertScore.findMany({
+    where: { tagId, score: { gt: 0 } },
+    orderBy: { score: "desc" },
+    include: { user: { select: { id: true, name: true, image: true } } },
+  });
+  return expertScores;
+}
+
+export async function getExpertScoresByUser(userId: string) {
+  const expertScores = await prisma.expertScore.findMany({
+    where: { userId, score: { gt: 0 } },
+    orderBy: { score: "desc" },
+    include: { tag: true },
+  });
+  return expertScores;
 }

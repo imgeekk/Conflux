@@ -19,5 +19,9 @@ export const queryKeys = {
   },
   tags: {
     all: ["tags"] as const,
-  }
+  },
+  experScores: {
+    byTag: (tagId: string) => ["experScores", "tag", tagId] as const,
+    byUser: (userId: string) => ["experScores", "user", userId] as const,
+  },
 };
