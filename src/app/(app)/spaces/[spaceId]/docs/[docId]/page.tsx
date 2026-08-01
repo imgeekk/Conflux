@@ -14,6 +14,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { TipTapEditor } from "@/components/tiptap-editor";
 import { Button } from "@/components/ui/button";
+import { ExpertBadge } from "@/components/ExpertBadge";
 
 type Params = Promise<{ spaceId: string; docId: string }>;
 
@@ -67,7 +68,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
       </div>
 
       {(doc as any).tags?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-8">
+        <div className="flex flex-wrap items-center gap-3 mb-8">
           {(doc as any).tags.map((dt: any) => (
             <span
               key={dt.tag.id}
@@ -76,6 +77,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
               {dt.tag.name}
             </span>
           ))}
+          <ExpertBadge tagId={(doc as any).tags[0].tag.id} />
         </div>
       )}
 
