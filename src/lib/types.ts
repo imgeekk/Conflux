@@ -83,6 +83,14 @@ export type ApiExpertScoreWithUser = ApiExperScore & {
   user: { id: string; name: string; image: string | null };
 }
 
+export type ApiExpertSummary = {
+  id: string;
+  name: string;
+  image: string | null;
+  totalScore: number;
+  topTag?: ApiTag;
+}
+
 export type CreateWorkspaceInput = {
   name: string;
 };

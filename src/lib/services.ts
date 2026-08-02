@@ -366,7 +366,7 @@ export async function createTag(name: string) {
   return tag;
 }
 
-// expert tag services
+// expert score services
 
 export async function addExpertScore(
   userId: string,
@@ -404,4 +404,108 @@ export async function getExpertScoresByUser(userId: string) {
     include: { tag: true },
   });
   return expertScores;
+}
+
+export async function getTopExpertsByTagIds(
+  memberIds: string[],
+  tagIds: string[],
+  take: number,
+) {
+  const users = await prisma.user.findMany({
+    where: {
+      id: { in: memberIds },
+      expertScores: {
+        some: {
+          tagId: { in: tagIds },
+          score: { gt: 0 },
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      expertScores: {
+        where: {
+          tagId: { in: tagIds },
+          score: { gt: 0 },
+        },
+        orderBy: { score: "desc" },
+        select: {
+          tag: { select: { id: true, name: true } },
+          score: true,
+        },
+      },
+    },
+  });
+
+  return users
+    .map((u) => ({
+      id: u.id,
+      name: u.name,
+      image: u.image,
+      totalScore: u.expertScores.reduce((sum, es) => sum + es.score, 0),
+      topTags: u.expertScores[0]?.tag ?? null,
+    }))
+    .filter((u) => u.totalScore > 0)
+    .sort((a, b) => b.totalScore - a.totalScore)
+    .slice(0, take);
+}
+
+export async function getTopExpertsInWorkspace(workspaceId: string, take: number) {
+  if (!workspaceId) return [];
+  const members = await prisma.member.findMany({
+    where: { workspaceId },
+    select: { userId: true },
+  });
+  const memberIds = members.map((m) => m.userId);
+  if (!memberIds.length) return [];
+
+  const docTags = await prisma.documentTag.findMany({
+    where: {
+      document: {
+        space: {
+          workspaceId,
+        },
+      },
+    },
+    select: { tagId: true },
+    distinct: ["tagId"],
+  });
+
+  const tagIds = docTags.map((t) => t.tagId);
+  if (tagIds.length === 0) return [];
+
+  return getTopExpertsByTagIds(memberIds, tagIds, take);
+}
+
+export async function getTopExpertsInSpace(spaceId: string, take: number) {
+  if (!spaceId) return [];
+  const members = await prisma.member.findMany({
+    where: {
+      workspace: {
+        spaces: {
+          some: { id: spaceId },
+        },
+      },
+    },
+    select: { userId: true },
+  });
+  const memberIds = members.map((m) => m.userId);
+  if (!memberIds.length) return [];
+
+  const docTags = await prisma.documentTag.findMany({
+    where: {
+      document: {
+        spaceId,
+      },
+    },
+    select: { tagId: true },
+    distinct: ["tagId"],
+  });
+
+  const tagIds = docTags.map((t) => t.tagId);
+  if (tagIds.length === 0) return [];
+
+  return getTopExpertsByTagIds(memberIds, tagIds, take);
 }

@@ -14,6 +14,7 @@ import {
   getMemberByUserIdAndWorkspaceId,
   getQuestionsBySpaceId,
   getSpaceById,
+  getTopExpertsInSpace,
 } from "@/lib/services";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { ExpertPanel } from "@/components/ExpertPanel";
 
 export default async function SpacePage({
   params,
@@ -43,9 +45,10 @@ export default async function SpacePage({
 
   const docs = await getDocumentsBySpaceId(spaceId);
   const questions = await getQuestionsBySpaceId(spaceId);
+  const experts = await getTopExpertsInSpace(spaceId, 5);
 
   return (
-    <div className="max-w-3xl mx-auto h-full flex flex-col">
+    <div className="max-w-5xl mx-auto h-full flex flex-col">
       {/* Space header */}
       <div className="flex items-start justify-between mb-8">
         <div>
@@ -77,154 +80,161 @@ export default async function SpacePage({
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>{docs.length}</CardTitle>
-            <CardDescription>Documents</CardDescription>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>{questions.length}</CardTitle>
-            <CardDescription>Questions asked</CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 grid-rows-1">
-        {/* Documents */}
-        <div className="flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-3 shrink-0">
-            <h2 className="text-md font-medium text-muted-foreground ">
-              Documents
-            </h2>
-            <Button
-              variant="ghost"
-              asChild
-              size="xs"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Link href={`/spaces/${spaceId}/docs/new`}>New doc →</Link>
-            </Button>
-          </div>
-
-          {docs.length === 0 ? (
-            <Card className="text-center flex-1">
-              <CardContent className="h-full flex flex-col items-center justify-center py-8">
-                <Button variant="outline" asChild>
-                  <FileIcon className="w-10 h-10 mb-2 text-muted-foreground" />
-                </Button>
-                <p className="text-sm text-muted-foreground mb-0.5">
-                  No documents yet.{" "}
-                </p>
-                <Button variant="secondary" asChild>
-                  <Link href={`/spaces/${spaceId}/docs/new`}>
-                    Write the first one
-                  </Link>
-                </Button>
-              </CardContent>
+      <div className="flex gap-6 flex-1 min-h-0">
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>{docs.length}</CardTitle>
+                <CardDescription>Documents</CardDescription>
+              </CardHeader>
             </Card>
-          ) : (
-            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
-              {docs.map((doc) => (
-                <Button
-                  key={doc.id}
-                  variant="outline"
-                  asChild
-                  className="w-full h-auto justify-start gap-3 p-3"
-                >
-                  <Link href={`/spaces/${spaceId}/docs/${doc.id}`}>
-                    <div className="w-8 h-8 bg-muted flex items-center justify-center shrink-0">
-                      <FileIcon className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {doc.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {doc.author.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
-                      <ClockIcon className="w-3 h-3" />
-                      {new Date(doc.updatedAt).toLocaleDateString()}
-                    </div>
-                  </Link>
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Questions */}
-        <div className="flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-3 shrink-0">
-            <h2 className="text-md font-medium text-muted-foreground ">
-              Questions
-            </h2>
-            <Button
-              variant="ghost"
-              asChild
-              size="xs"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Link href={`/spaces/${spaceId}/questions`}>
-                Ask a question →
-              </Link>
-            </Button>
+            <Card>
+              <CardHeader>
+                <CardTitle>{questions.length}</CardTitle>
+                <CardDescription>Questions asked</CardDescription>
+              </CardHeader>
+            </Card>
           </div>
 
-          {questions.length === 0 ? (
-            <Card className="text-center flex-1">
-              <CardContent className="h-full flex flex-col items-center justify-center py-8">
-                <Button variant="outline" asChild>
-                  <QuestionMarkIcon className="w-10 h-10 mb-2 text-muted-foreground" />
+          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 grid-rows-1">
+            {/* Documents */}
+            <div className="flex flex-col min-h-0">
+              <div className="flex items-center justify-between mb-3 shrink-0">
+                <h2 className="text-md font-medium text-muted-foreground ">
+                  Documents
+                </h2>
+                <Button
+                  variant="ghost"
+                  asChild
+                  size="xs"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Link href={`/spaces/${spaceId}/docs/new`}>New doc →</Link>
                 </Button>
-                <p className="text-sm text-muted-foreground mb-0.5">
-                  No questions yet.{" "}
-                </p>
+              </div>
 
-                <Button variant="secondary" asChild>
+              {docs.length === 0 ? (
+                <Card className="text-center flex-1">
+                  <CardContent className="h-full flex flex-col items-center justify-center py-8">
+                    <Button variant="outline" asChild>
+                      <FileIcon className="w-10 h-10 mb-2 text-muted-foreground" />
+                    </Button>
+                    <p className="text-sm text-muted-foreground mb-0.5">
+                      No documents yet.{" "}
+                    </p>
+                    <Button variant="secondary" asChild>
+                      <Link href={`/spaces/${spaceId}/docs/new`}>
+                        Write the first one
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
+                  {docs.map((doc) => (
+                    <Button
+                      key={doc.id}
+                      variant="outline"
+                      asChild
+                      className="w-full h-auto justify-start gap-3 p-3"
+                    >
+                      <Link href={`/spaces/${spaceId}/docs/${doc.id}`}>
+                        <div className="w-8 h-8 bg-muted flex items-center justify-center shrink-0">
+                          <FileIcon className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {doc.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {doc.author.name}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                          <ClockIcon className="w-3 h-3" />
+                          {new Date(doc.updatedAt).toLocaleDateString()}
+                        </div>
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Questions */}
+            <div className="flex flex-col min-h-0">
+              <div className="flex items-center justify-between mb-3 shrink-0">
+                <h2 className="text-md font-medium text-muted-foreground ">
+                  Questions
+                </h2>
+                <Button
+                  variant="ghost"
+                  asChild
+                  size="xs"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <Link href={`/spaces/${spaceId}/questions`}>
-                    Ask your first question
+                    Ask a question →
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
+              </div>
+
+              {questions.length === 0 ? (
+                <Card className="text-center flex-1">
+                  <CardContent className="h-full flex flex-col items-center justify-center py-8">
+                    <Button variant="outline" asChild>
+                      <QuestionMarkIcon className="w-10 h-10 mb-2 text-muted-foreground" />
+                    </Button>
+                    <p className="text-sm text-muted-foreground mb-0.5">
+                      No questions yet.{" "}
+                    </p>
+
+                    <Button variant="secondary" asChild>
+                      <Link href={`/spaces/${spaceId}/questions`}>
+                        Ask your first question
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
                   {questions.map((q) => (
-                <Button
-                  key={q.id}
-                  variant="outline"
-                  asChild
-                  className="w-full h-auto justify-start gap-3 p-3"
-                >
-                  <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
-                    <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
-                      <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {q.text}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {q.author.name} · {q.answers.length} answer
-                        {q.answers.length !== 1 ? "s" : ""}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
-                      <ClockIcon className="w-3 h-3" />
-                      {new Date(q.createdAt).toLocaleDateString()}
-                    </div>
-                  </Link>
-                </Button>
-              ))}
+                    <Button
+                      key={q.id}
+                      variant="outline"
+                      asChild
+                      className="w-full h-auto justify-start gap-3 p-3"
+                    >
+                      <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
+                        <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
+                          <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {q.text}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {q.author.name} · {q.answers.length} answer
+                            {q.answers.length !== 1 ? "s" : ""}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                          <ClockIcon className="w-3 h-3" />
+                          {new Date(q.createdAt).toLocaleDateString()}
+                        </div>
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
+        <aside>
+          <ExpertPanel title="Top experts" experts={experts} />
+        </aside>
       </div>
     </div>
   );
