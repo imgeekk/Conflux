@@ -25,6 +25,7 @@ model User {
   answers       Answer[]
   expertScores  ExpertScore[]
   questionsAsked Question[]
+  invitesCreated Invite[]
 }
 
 model Account {
@@ -76,6 +77,7 @@ model Workspace {
 
   members   Member[]
   spaces    Space[]
+  invites   Invite[]
 }
 
 model Member {
@@ -197,4 +199,20 @@ model ExpertScore {
   tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([userId, tagId])
+}
+
+model Invite {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  workspaceId String
+  // role        Role     @default(MEMBER)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+  maxUses     Int      @default(1)
+  uses        Int      @default(0)
+  revoked     Boolean  @default(false)
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdByUser User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
 }
