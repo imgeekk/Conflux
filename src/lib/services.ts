@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { randomBytes } from "crypto";
 
 // workspace services
 
@@ -25,10 +26,53 @@ export async function createWorkspace(
 export async function getWorkspaceByUserId(userId: string) {
   const membership = await prisma.member.findFirst({
     where: { userId },
+    orderBy: { createdAt: "desc" }, // this would be the most recent workspace the user joined
     include: { workspace: true },
   });
   const workspace = membership?.workspace ?? null;
   return workspace;
+}
+
+export async function joinWorkspaceWithCode(code: string, userId: string) {
+  const invite = await getInviteByCode(code);
+  if (!invite)
+    return { ok: false as const, error: "Invalid or expired invite" };
+
+  const existing = await prisma.member.findUnique({
+    where: {
+      userId_workspaceId: { userId, workspaceId: invite.workspaceId },
+    },
+  });
+  if (existing)
+    return {
+      ok: false as const,
+      alreadyMember: true,
+      workspace: invite.workspace,
+    };
+
+  await prisma.$transaction([
+    prisma.member.create({
+      data: {
+        userId,
+        workspaceId: invite.workspaceId,
+        role: "MEMBER",
+      },
+    }),
+    prisma.invite.update({
+      where: {
+        id: invite.id,
+      },
+      data: {
+        uses: { increment: 1 },
+      },
+    }),
+  ]);
+
+  return {
+    ok: true as const,
+    alreadyMember: false,
+    workspace: invite.workspace,
+  };
 }
 
 // space services
@@ -74,6 +118,31 @@ export async function getMemberByUserIdAndWorkspaceId(
 ) {
   const member = await prisma.member.findUnique({
     where: { userId_workspaceId: { userId, workspaceId } },
+  });
+  return member;
+}
+
+export async function getWorkspaceMembers(workspaceId: string) {
+  const members = await prisma.member.findMany({
+    where: { workspaceId },
+    include: {
+      user: { select: { id: true, name: true, email: true, image: true } },
+    },
+  });
+  return members;
+}
+
+export async function deleteMember(userId: string, workspaceId: string) {
+  await prisma.member.delete({
+    where: { userId_workspaceId: { userId, workspaceId } },
+  });
+}
+
+export async function getMember(memberId: string) {
+  const member = await prisma.member.findUnique({
+    where: {
+      id: memberId,
+    },
   });
   return member;
 }
@@ -452,7 +521,10 @@ export async function getTopExpertsByTagIds(
     .slice(0, take);
 }
 
-export async function getTopExpertsInWorkspace(workspaceId: string, take: number) {
+export async function getTopExpertsInWorkspace(
+  workspaceId: string,
+  take: number,
+) {
   if (!workspaceId) return [];
   const members = await prisma.member.findMany({
     where: { workspaceId },
@@ -508,4 +580,72 @@ export async function getTopExpertsInSpace(spaceId: string, take: number) {
   if (tagIds.length === 0) return [];
 
   return getTopExpertsByTagIds(memberIds, tagIds, take);
+}
+
+// invite services
+
+export async function generateInviteCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  for (let i = 0; i < 10; i++) {
+    const bytes = randomBytes(8);
+    let code = "";
+    for (let j = 0; j < 8; j++) code += chars[bytes[j] % chars.length];
+    const existing = await prisma.invite.findUnique({ where: { code } });
+    if (!existing) return code;
+  }
+  throw new Error("Could not generate unique invite code");
+}
+
+export async function createInvite(
+  workspaceId: string,
+  createdBy: string,
+  expiresAt: Date,
+  maxUses: number,
+) {
+  const code = await generateInviteCode();
+  return prisma.invite.create({
+    data: {
+      code,
+      workspaceId,
+      createdBy,
+      expiresAt,
+      ...(maxUses ? { maxUses } : {}),
+    },
+  });
+}
+
+export async function getInvites(workspaceId: string) {
+  const invites = await prisma.invite.findMany({
+    where: {
+      workspaceId,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  return invites;
+}
+
+export async function revokeInvite(inviteId: string) {
+  const revoked = await prisma.invite.update({
+    where: {
+      id: inviteId,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+}
+
+export async function getInviteByCode(code: string) {
+  const invite = await prisma.invite.findUnique({
+    where: {
+      code,
+    },
+    include: {
+      workspace: { select: { id: true, name: true } },
+    },
+  });
+  if (!invite || invite.revoked) return null;
+  if (invite.expiresAt && invite.expiresAt < new Date()) return null;
+  if (invite.maxUses !== null && invite.uses >= invite.maxUses) return null;
+  return invite;
 }
