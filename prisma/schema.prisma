@@ -208,7 +208,7 @@ model Invite {
   // role        Role     @default(MEMBER)
   createdBy   String
   createdAt   DateTime @default(now())
-  expiresAt   DateTime
+  expiresAt   DateTime?
   maxUses     Int      @default(1)
   uses        Int      @default(0)
   revoked     Boolean  @default(false)

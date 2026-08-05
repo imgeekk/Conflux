@@ -66,22 +66,22 @@ export type ApiQuestionWithAnswers = ApiQuestion & {
 export type ApiTag = {
   id: string;
   name: string;
-}
+};
 
 export type ApiExperScore = {
   id: string;
   userId: string;
   tagId: string;
   score: number;
-}
+};
 
 export type ApiExpertScoreWithTag = ApiExperScore & {
   tag: ApiTag;
-}
+};
 
 export type ApiExpertScoreWithUser = ApiExperScore & {
   user: { id: string; name: string; image: string | null };
-}
+};
 
 export type ApiExpertSummary = {
   id: string;
@@ -89,7 +89,31 @@ export type ApiExpertSummary = {
   image: string | null;
   totalScore: number;
   topTag?: ApiTag;
-}
+};
+
+export type ApiMember = {
+  id: string;
+  userId: string;
+  workspaceId: string;
+  role: "OWNER" | "MEMBER";
+  createdAt: string;
+  user: { id: string; name: string; email: string; image: string | null };
+};
+
+export type ApiInvite = {
+  id: string;
+  code: string;
+  workspaceId: string;
+  createdAt: string;
+  expiresAt: string | null;
+  maxUses: number | null;
+  uses: number;
+  revoked: boolean;
+};
+
+export type ApiInviteWithWorkspace = ApiInvite & {
+  workspace: { id: string; name: string };
+};
 
 export type CreateWorkspaceInput = {
   name: string;
@@ -115,11 +139,11 @@ export type CreateQuestionInput = {
 
 export type CreateAnswerInput = {
   body: string;
-}
+};
 
 export type CreateTagInput = {
   name: string;
-}
+};
 
 export type UpdateDocumentInput = {
   title?: string;
@@ -134,7 +158,7 @@ export type UpdateQuestionInput = {
 export type UpdateAnswerInput = {
   answerId: string;
   body?: string;
-}
+};
 
 export type ProseMirrorNode = {
   type: string;

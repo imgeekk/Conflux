@@ -599,8 +599,8 @@ export async function generateInviteCode() {
 export async function createInvite(
   workspaceId: string,
   createdBy: string,
-  expiresAt: Date,
-  maxUses: number,
+  expiresAt?: Date,
+  maxUses?: number,
 ) {
   const code = await generateInviteCode();
   return prisma.invite.create({
@@ -608,7 +608,7 @@ export async function createInvite(
       code,
       workspaceId,
       createdBy,
-      expiresAt,
+      ...(expiresAt ? { expiresAt } : {}),
       ...(maxUses ? { maxUses } : {}),
     },
   });
@@ -647,5 +647,14 @@ export async function getInviteByCode(code: string) {
   if (!invite || invite.revoked) return null;
   if (invite.expiresAt && invite.expiresAt < new Date()) return null;
   if (invite.maxUses !== null && invite.uses >= invite.maxUses) return null;
+  return invite;
+}
+
+export async function getInviteById(inviteId: string) {
+  const invite = await prisma.invite.findUnique({
+    where: {
+      id: inviteId,
+    },
+  });
   return invite;
 }

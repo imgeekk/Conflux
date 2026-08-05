@@ -24,4 +24,10 @@ export const queryKeys = {
     byTag: (tagId: string) => ["experScores", "tag", tagId] as const,
     byUser: (userId: string) => ["experScores", "user", userId] as const,
   },
+  members: {
+    byWorkspace: (id: string) => ["members", id] as const,
+  },
+  invites: {
+    byWorkspace: (id: string) => ["invites", id] as const,
+  },
 };
