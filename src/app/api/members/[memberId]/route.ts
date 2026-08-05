@@ -34,7 +34,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    await deleteMember(memberId, session.user.id);
+    await deleteMember(member.userId, member.workspaceId);
     return NextResponse.json(
       { success: true, message: "Member deleted successfully" },
       { status: 200 },
