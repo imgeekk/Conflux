@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { signIn } from "@/lib/auth-client"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import {
   Card,
@@ -14,14 +14,18 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/home"
+
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError("")
@@ -29,7 +33,7 @@ export default function LoginPage() {
     const { error } = await signIn.email({
       email,
       password,
-      callbackURL: "/home",
+      callbackURL: callbackUrl,
     })
 
     if (error) {
@@ -39,7 +43,7 @@ export default function LoginPage() {
   }
 
   async function handleGoogle() {
-    await signIn.social({ provider: "google", callbackURL: "/home" })
+    await signIn.social({ provider: "google", callbackURL: callbackUrl })
   }
 
   return (
@@ -133,7 +137,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="mt-1 w-full"
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? <Spinner className="w-3.5 h-3.5" /> : "Sign in"}
               </Button>
             </form>
           </CardContent>
@@ -152,5 +156,12 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+  )
+}
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   )
 }

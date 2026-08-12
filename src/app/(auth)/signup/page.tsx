@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signUp, signIn } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Card,
@@ -14,15 +14,19 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 
-export default function SignupPage() {
+function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/home";
+
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -31,7 +35,7 @@ export default function SignupPage() {
       name,
       email,
       password,
-      callbackURL: "/home",
+      callbackURL: callbackUrl,
     });
 
     if (error) {
@@ -41,7 +45,7 @@ export default function SignupPage() {
   }
 
   async function handleGoogle() {
-    await signIn.social({ provider: "google", callbackURL: "/home" });
+    await signIn.social({ provider: "google", callbackURL: callbackUrl });
   }
 
   return (
@@ -95,7 +99,7 @@ export default function SignupPage() {
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               {error && (
-                <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2">
+                <p className="text-xs text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2">
                   {error}
                 </p>
               )}
@@ -140,7 +144,11 @@ export default function SignupPage() {
               </div>
 
               <Button type="submit" disabled={loading} className="mt-1 w-full">
-                {loading ? "Creating account..." : "Create account"}
+                {loading ? (
+                  <Spinner className="w-3.5 h-3.5" />
+                ) : (
+                  "Create account"
+                )}
               </Button>
             </form>
           </CardContent>
@@ -159,5 +167,12 @@ export default function SignupPage() {
         </Card>
       </div>
     </div>
+  );
+}
+export default function SignupPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupForm />
+    </Suspense>
   );
 }
