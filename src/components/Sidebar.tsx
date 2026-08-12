@@ -26,6 +26,7 @@ import {
   SignOutIcon,
   ArrowDownIcon,
   FolderIcon,
+  UsersThreeIcon,
 } from "@phosphor-icons/react";
 import { useWorkspace } from "@/lib/workspace-context";
 import { useSpaces } from "@/hooks/use-spaces";
@@ -41,6 +42,7 @@ export default function AppSidebar() {
     { href: "/home", label: "Home", icon: HouseIcon },
     { href: "/search", label: "Search", icon: MagnifyingGlassIcon },
     { href: "/questions", label: "Questions", icon: QuestionIcon },
+    { href: "/workspace/members", label: "Members", icon: UsersThreeIcon },
   ];
 
   async function handleSignOut() {
