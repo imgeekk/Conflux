@@ -209,7 +209,7 @@ model Invite {
   createdBy   String
   createdAt   DateTime @default(now())
   expiresAt   DateTime?
-  maxUses     Int      @default(1)
+  maxUses     Int?
   uses        Int      @default(0)
   revoked     Boolean  @default(false)
 

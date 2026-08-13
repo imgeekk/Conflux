@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Invite" ALTER COLUMN "maxUses" DROP NOT NULL,
+ALTER COLUMN "maxUses" DROP DEFAULT;
