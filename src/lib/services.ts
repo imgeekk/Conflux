@@ -50,23 +50,32 @@ export async function joinWorkspaceWithCode(code: string, userId: string) {
       workspace: invite.workspace,
     };
 
-  await prisma.$transaction([
-    prisma.member.create({
-      data: {
-        userId,
-        workspaceId: invite.workspaceId,
-        role: "MEMBER",
-      },
-    }),
-    prisma.invite.update({
-      where: {
-        id: invite.id,
-      },
-      data: {
-        uses: { increment: 1 },
-      },
-    }),
-  ]);
+  try {
+    await prisma.$transaction(async (tx) => {
+      const res = await tx.invite.update({
+        where: {
+          id: invite.id,
+          uses: { lt: invite.maxUses ?? Number.MAX_SAFE_INTEGER },
+        },
+        data: {
+          uses: { increment: 1 },
+        },
+      });
+      if (!res) throw new Error("INVITE_EXHAUSTED");
+      await tx.member.create({
+        data: {
+          userId,
+          workspaceId: invite.workspaceId,
+          role: "MEMBER",
+        },
+      });
+    });
+  } catch (error) {
+    if ((error as Error).message === "INVITE_EXHAUSTED") {
+      return { ok: false as const, error: "Invalid or expired invite" };
+    }
+    throw error;
+  }
 
   return {
     ok: true as const,
@@ -599,8 +608,8 @@ export async function generateInviteCode() {
 export async function createInvite(
   workspaceId: string,
   createdBy: string,
+  maxUses: number | null,
   expiresAt?: Date,
-  maxUses?: number,
 ) {
   const code = await generateInviteCode();
   return prisma.invite.create({
@@ -609,7 +618,7 @@ export async function createInvite(
       workspaceId,
       createdBy,
       ...(expiresAt ? { expiresAt } : {}),
-      ...(maxUses ? { maxUses } : {}),
+      maxUses: maxUses ?? null,
     },
   });
 }

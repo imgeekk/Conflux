@@ -25,7 +25,7 @@ export function useCreateInvite(workspaceId: string) {
       maxUses,
     }: {
       expiresAt?: string;
-      maxUses?: number;
+      maxUses?: number | null;
     }) => {
       const res = await fetch(`/api/invites`, {
         method: "POST",

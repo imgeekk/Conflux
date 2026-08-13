@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
 import {
   UsersThreeIcon,
   PlusIcon,
@@ -36,12 +37,19 @@ export default function MembersPage() {
     useCreateInvite(workspaceId);
   const { mutate: revokeInvite } = useRevokeInvite(workspaceId);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [maxUses, setMaxUses] = useState("1");
+  const parsedMaxUses = maxUses.trim() === "" ? null : Number(maxUses);
+  const maxUsesValid = parsedMaxUses === null || (Number.isInteger(parsedMaxUses) && parsedMaxUses > 0);
   const isOwner = members.some(
     (m) => m.userId === currentUserId && m.role === "OWNER",
   );
   function handleGenerate() {
+    if (!maxUsesValid) {
+      throw new Error("maxUses must be a positive integer or null");
+      return;
+    }
     createInvite(
-      {},
+      { maxUses: parsedMaxUses },
       {
         onSuccess: (invite) => {
           const link = `${window.location.origin}/join?code=${invite.code}`;
@@ -126,16 +134,33 @@ export default function MembersPage() {
           <CardDescription>Share a link or code to add members</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <Button onClick={handleGenerate} disabled={creating}>
-            {creating ? (
-              <Spinner className="w-3.5 h-3.5" />
-            ) : (
-              <div className="flex items-center gap-1">
-                <PlusIcon className="w-3.5 h-3.5" />
-                Generate invite link
-              </div>
-            )}
-          </Button>
+          <div className="flex items-end gap-2">
+            <div className="flex w-24 flex-col gap-1">
+              <label htmlFor="max-uses" className="text-xs font-medium text-muted-foreground">
+                Max uses
+              </label>
+              <Input
+                id="max-uses"
+                type="number"
+                min={1}
+                value={maxUses}
+                onChange={(e) => setMaxUses(e.target.value)}
+                placeholder="∞"
+                title="Leave empty for unlimited"
+              />
+            </div>
+            <Button onClick={handleGenerate} disabled={creating || !maxUsesValid}>
+              {creating ? (
+                <Spinner className="w-3.5 h-3.5" />
+              ) : (
+                <div className="flex items-center gap-1">
+                  <PlusIcon className="w-3.5 h-3.5" />
+                  Generate invite link
+                </div>
+              )}
+            </Button>
+          </div>
+
           {invites.length === 0 ? (
             <p className="text-xs text-muted-foreground">No invites yet.</p>
           ) : (

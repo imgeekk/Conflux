@@ -25,11 +25,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    let parsedMaxUses: number | null;
+    if (maxUses === undefined || maxUses === null) {
+      parsedMaxUses = maxUses === null ? null : 1;
+    } else {
+      parsedMaxUses = Number(maxUses);
+      if (!Number.isInteger(parsedMaxUses) || parsedMaxUses < 1) {
+        return NextResponse.json(
+          { error: "maxUses must be a positive integer or null" },
+          { status: 400 },
+        );
+      }
+    }
+
     const invite = await createInvite(
       workspaceId,
       session.user.id,
+      parsedMaxUses,
       expiresAt,
-      maxUses,
     );
     return NextResponse.json(invite);
   } catch (error) {
