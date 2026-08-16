@@ -172,3 +172,19 @@ export type ProseMirrorDoc = {
   type: "doc";
   content: ProseMirrorNode[];
 };
+
+export type SearchSource = {
+  sourceId: string;
+  sourceTitle: string;
+  sourceType: "document" | "answer";
+  spaceId: string;
+  author: { name: string; image: string | null } | null;
+};
+
+export type SearchResponse = {
+  answer: string;
+  confidence: number;
+  lowConfidence: boolean;
+  expert: ApiExpertSummary | null;
+  sources: SearchSource[];
+};

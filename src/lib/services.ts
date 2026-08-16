@@ -591,6 +591,34 @@ export async function getTopExpertsInSpace(spaceId: string, take: number) {
   return getTopExpertsByTagIds(memberIds, tagIds, take);
 }
 
+export async function getTopExpertsForQuery(
+  documentIds: string[],
+  workspaceId: string,
+  take: number,
+) {
+  if (documentIds.length === 0) return [];
+
+  const docTags = await prisma.documentTag.findMany({
+    where: {
+      documentId: { in: documentIds },
+    },
+    select: { tagId: true },
+  });
+  const tagIds = docTags.map((t) => t.tagId);
+  if (tagIds.length === 0) return [];
+
+  const members = await prisma.member.findMany({
+    where: {
+      workspaceId,
+    },
+    select: { userId: true },
+  });
+  const memberIds = members.map((m) => m.userId);
+  if (memberIds.length === 0) return [];
+
+  return getTopExpertsByTagIds(memberIds, tagIds, take);
+}
+
 // invite services
 
 export async function generateInviteCode() {
