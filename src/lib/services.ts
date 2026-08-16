@@ -523,7 +523,7 @@ export async function getTopExpertsByTagIds(
       name: u.name,
       image: u.image,
       totalScore: u.expertScores.reduce((sum, es) => sum + es.score, 0),
-      topTags: u.expertScores[0]?.tag ?? null,
+      topTag: u.expertScores[0]?.tag ?? null,
     }))
     .filter((u) => u.totalScore > 0)
     .sort((a, b) => b.totalScore - a.totalScore)
