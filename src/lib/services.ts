@@ -593,14 +593,17 @@ export async function getTopExpertsInSpace(spaceId: string, take: number) {
 
 export async function getTopExpertsForQuery(
   documentIds: string[],
+  spaceIds: string[],
   workspaceId: string,
   take: number,
 ) {
-  if (documentIds.length === 0) return [];
+  if (documentIds.length === 0 && spaceIds.length === 0) return [];
 
   const docTags = await prisma.documentTag.findMany({
     where: {
-      documentId: { in: documentIds },
+      document: {
+        OR: [{ id: { in: documentIds } }, { spaceId: { in: spaceIds } }],
+      },
     },
     select: { tagId: true },
   });

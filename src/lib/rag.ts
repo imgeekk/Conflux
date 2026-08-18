@@ -334,8 +334,13 @@ export async function answerQuestion(
     const documentIds = sources
       .filter((s) => s.sourceType === "document")
       .map((s) => s.sourceId);
+    const spaceIds = sources
+      .filter((s) => s.sourceType === "answer")
+      .map((s) => s.spaceId);
+
     const experts = await getTopExpertsForQuery(
       documentIds,
+      spaceIds,
       workspaceId,
       EXPERT_SUGGESTION_LIMIT,
     );
