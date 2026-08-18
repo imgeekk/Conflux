@@ -22,8 +22,9 @@ model User {
   sessions      Session[]
   members       Member[]
   documents     Document[]
-  answers       Answer[]
+  answers       Answer[] @relation("AnswerAuthor")
   expertScores  ExpertScore[]
+  expertAnswers Answer[] @relation("AnswerExpert")
   questionsAsked Question[]
   invitesCreated Invite[]
 }
@@ -161,12 +162,16 @@ model Answer {
   authorId   String?
   isAiDraft  Boolean  @default(false)
   isAccepted Boolean  @default(false)
+  confidence Float?
+  lowConfidence Boolean?  @default(false)
+  expertId   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  author   User?    @relation(fields: [authorId], references: [id])
+  author   User?    @relation("AnswerAuthor", fields: [authorId], references: [id])
   chunks   Chunk[]
+  expert   User? @relation("AnswerExpert", fields: [expertId], references: [id])
 }
 
 model Tag {
