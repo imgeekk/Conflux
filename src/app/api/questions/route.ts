@@ -10,9 +10,7 @@ import {
 } from "@/lib/services";
 import { answerQuestion } from "@/lib/rag";
 
-export async function GET(
-  req: NextRequest
-) {
+export async function GET(req: NextRequest) {
   try {
     const session = await requireSession();
     const spaceId = req.nextUrl.searchParams.get("spaceId");
@@ -62,15 +60,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const question = await createQuestion(
-      text,
-      spaceId,
-      session.user.id,
-    );
+    const question = await createQuestion(text, spaceId, session.user.id);
 
-    try{
+    try {
       const result = await answerQuestion(text, space.workspaceId);
-      await createAnswer(question.id, result.answer, true)
+      await createAnswer({
+        questionId: question.id,
+        body: result.answer,
+        isAiDraft: true,
+        confidence: result.confidence,
+        lowConfidence: result.lowConfidence,
+        expert: result.expert,
+      });
     } catch (error) {
       console.error("AI answering failed:", error);
     }

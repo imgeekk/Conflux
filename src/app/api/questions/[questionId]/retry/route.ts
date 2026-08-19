@@ -34,7 +34,14 @@ export async function POST(
       question.text,
       question.space.workspaceId,
     );
-    await createAnswer(question.id, result.answer, true);
+    await createAnswer({
+      questionId: question.id,
+      body: result.answer,
+      isAiDraft: true,
+      confidence: result.confidence,
+      lowConfidence: result.lowConfidence,
+      expert: result.expert,
+    });
     const updated = await getQuestionById(questionId);
     return NextResponse.json(updated);
   } catch {

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
+import { ApiExpertSummary } from "./types";
 
 // workspace services
 
@@ -285,7 +286,15 @@ export async function getQuestionsBySpaceId(spaceId: string) {
     where: { spaceId },
     orderBy: { createdAt: "desc" },
     take: 10,
-    include: { author: true, answers: { include: { author: true } } },
+    include: {
+      author: true,
+      answers: {
+        include: {
+          author: true,
+          expert: { select: { id: true, name: true, image: true } },
+        },
+      },
+    },
   });
   return questions;
 }
@@ -311,7 +320,12 @@ export async function getQuestionById(questionId: string) {
     include: {
       space: { select: { workspaceId: true } },
       author: { select: { id: true, name: true, image: true } },
-      answers: { include: { author: true } },
+      answers: {
+        include: {
+          author: true,
+          expert: { select: { id: true, name: true, image: true } },
+        },
+      },
     },
   });
   return question;
@@ -333,18 +347,32 @@ export async function deleteQuestion(questionId: string) {
 
 // answer services
 
-export async function createAnswer(
-  questionId: string,
-  body: string,
-  isAiDraft: boolean,
-  authorId?: string,
-) {
+export async function createAnswer({
+  questionId,
+  body,
+  isAiDraft,
+  confidence,
+  lowConfidence,
+  expert,
+  authorId,
+}: {
+  questionId: string;
+  body: string;
+  isAiDraft: boolean;
+  confidence?: number;
+  lowConfidence?: boolean;
+  expert?: ApiExpertSummary | null;
+  authorId?: string;
+}) {
   const answer = await prisma.answer.create({
     data: {
       questionId,
       body,
       authorId,
       isAiDraft,
+      confidence,
+      lowConfidence,
+      expertId: expert?.id || null,
     },
   });
   return answer;

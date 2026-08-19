@@ -50,12 +50,16 @@ export type ApiAnswer = {
   authorId: string;
   isAiDraft: boolean;
   isAccepted: boolean;
+  confidence: number | null;
+  lowConfidence: boolean | null;
+  expertId: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
 export type ApiAnswerWithAuthor = ApiAnswer & {
   author: { id: string; name: string; image: string | null };
+  expert: { id: string; name: string; image: string | null } | null;
 };
 
 export type ApiQuestionWithAnswers = ApiQuestion & {

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
-import { createAnswer, getMemberByUserIdAndWorkspaceId, getQuestionById } from "@/lib/services";
+import {
+  createAnswer,
+  getMemberByUserIdAndWorkspaceId,
+  getQuestionById,
+} from "@/lib/services";
 
 export async function POST(
   req: NextRequest,
@@ -15,7 +19,7 @@ export async function POST(
     }
 
     const { body } = await req.json();
-    if(!body) {
+    if (!body) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
@@ -35,17 +39,19 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const answer = await createAnswer(
-      questionId,
+    const answer = await createAnswer({
+      questionId: question.id,
       body,
-      false,
-      session.user.id,
-    );
+      isAiDraft: false,
+      authorId: session.user.id,
+    });
 
     return NextResponse.json(answer, { status: 201 });
-
   } catch (error) {
     console.error("Error creating answer:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
