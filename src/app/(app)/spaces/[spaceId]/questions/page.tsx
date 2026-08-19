@@ -10,6 +10,7 @@ import {
   SparkleIcon,
   SmileySadIcon,
   CheckCircleIcon,
+  WarningIcon,
 } from "@phosphor-icons/react";
 import { useQuestions, useCreateQuestion } from "@/hooks/use-questions";
 import { useRetryAnswer } from "@/hooks/use-retry-answer";
@@ -104,6 +105,14 @@ export default function QuestionsPage() {
                           <SparkleIcon className="w-3.5 h-3.5 text-chart-2" />
                           <span className="text-xs text-muted-foreground">
                             AI-generated draft
+                          </span>
+                        </div>
+                      )}
+                      {answers[0].isAiDraft && answers[0].lowConfidence && (
+                        <div className="flex items-center gap-1.5">
+                          <WarningIcon className="w-3.5 h-3.5 text-amber-500" />
+                          <span className="text-xs text-amber-600 dark:text-amber-400">
+                            Low confidence
                           </span>
                         </div>
                       )}

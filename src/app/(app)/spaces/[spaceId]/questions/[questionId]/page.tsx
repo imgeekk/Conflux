@@ -12,6 +12,7 @@ import {
   XIcon,
   PaperPlaneTiltIcon,
   QuestionMarkIcon,
+  WarningIcon,
 } from "@phosphor-icons/react";
 import { useSession } from "@/lib/auth-client";
 import {
@@ -25,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import Loader from "@/components/Loader";
 import { Card, CardContent } from "@/components/ui/card";
+import { ExpertSuggestionCard } from "@/components/ExpertSuggestionCard";
 export default function QuestionDetailPage() {
   const params = useParams<{ spaceId: string; questionId: string }>();
   const { spaceId, questionId } = params;
@@ -148,6 +150,15 @@ export default function QuestionDetailPage() {
                     {(acceptedAnswer as any).author?.name ?? "AI Draft"} ·{" "}
                     {new Date(acceptedAnswer.createdAt).toLocaleDateString()}
                   </div>
+                  {acceptedAnswer.isAiDraft && acceptedAnswer.lowConfidence && (
+                    <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
+                      <WarningIcon className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>The AI wasn't fully confident about this answer.</span>
+                    </div>
+                  )}
+                  {acceptedAnswer.isAiDraft && acceptedAnswer.lowConfidence && acceptedAnswer.expert && (
+                    <ExpertSuggestionCard expert={acceptedAnswer.expert} />
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -172,6 +183,17 @@ export default function QuestionDetailPage() {
                             AI-generated draft
                           </span>
                         </div>
+                      )}
+                      {/* Low confidence warning */}
+                      {answer.isAiDraft && answer.lowConfidence && (
+                        <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
+                          <WarningIcon className="w-4 h-4 shrink-0 mt-0.5" />
+                          <span>The AI isn't fully confident about this answer.</span>
+                        </div>
+                      )}
+                      {/* Expert suggestion */}
+                      {answer.isAiDraft && answer.lowConfidence && answer.expert && (
+                        <ExpertSuggestionCard expert={answer.expert} />
                       )}
                       {/* Body: edit mode vs read mode */}
                       {editingAnswerId === answer.id ? (
