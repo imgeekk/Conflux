@@ -129,6 +129,7 @@ export async function embedDocument(
   documentId: string,
   title: string,
   content: string,
+  workspaceId?: string
 ) {
   await deleteDocumentChunks(documentId);
 
@@ -148,7 +149,7 @@ export async function embedDocument(
   }
 
   for (const chunkText of chunks) {
-    const embedding = await generateEmbedding(chunkText);
+    const embedding = await generateEmbedding(chunkText, workspaceId);
     const vector = `[${embedding.join(",")}]`;
 
     await prisma.$executeRaw`
@@ -168,6 +169,7 @@ export async function embedAnswer(
   answerId: string,
   content: string,
   questionTitle: string,
+  workspaceId?: string
 ) {
   await deleteAnswerChunks(answerId);
 
@@ -177,7 +179,7 @@ export async function embedAnswer(
   const chunks = buildChunksFromText(trimmed, questionTitle);
 
   for (const chunkText of chunks) {
-    const embedding = await generateEmbedding(chunkText);
+    const embedding = await generateEmbedding(chunkText, workspaceId);
     const vector = `[${embedding.join(",")}]`;
 
     await prisma.$executeRaw`
@@ -208,7 +210,7 @@ export async function searchChunks(
     author: { name: string; image: string | null } | null;
   }[]
 > {
-  const embedding = await generateEmbedding(query);
+  const embedding = await generateEmbedding(query, workspaceId);
   const vector = `[${embedding.join(",")}]`;
 
   const [docResults, answerResults] = await Promise.all([
@@ -315,6 +317,7 @@ export async function answerQuestion(
   const answer = await generateAnswer(
     question,
     chunks.map((c) => c.content),
+    workspaceId
   );
 
   const sources = chunks

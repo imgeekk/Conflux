@@ -1,0 +1,146 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useWorkspace } from "@/lib/workspace-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+} from "@/components/ui/card";
+import { GearIcon, CheckCircleIcon } from "@phosphor-icons/react";
+import Loader from "@/components/Loader";
+import { useSettings, useUpdateSettings } from "@/hooks/use-settings";
+
+export default function SettingsPage() {
+    const { workspace } = useWorkspace();
+    const [apiKey, setApiKey] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
+    const { data: settings, isLoading, error: settingsError } = useSettings(workspace?.id ?? "");
+    const { mutate: updateSettings, isPending, error: updateError } = useUpdateSettings(workspace?.id ?? "");
+
+    async function handleSave() {
+        if (!apiKey.trim()) return;
+        setError("");
+        updateSettings({ apiKey });
+        setSuccess(true);
+        setError(updateError ? updateError.message : "");
+    }
+
+    async function handleRemove() {
+        setError("");
+        updateSettings({ apiKey: "" });
+        setSuccess(true);
+        setError(updateError ? updateError.message : "");
+    }
+
+    if (isLoading) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <Loader />
+            </div>
+        );
+    }
+
+    if (settingsError) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <p className="text-destructive">Error loading settings: {settingsError.message}</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="w-2xl mx-auto flex flex-col gap-6">
+            <div className="flex items-center gap-2">
+                <GearIcon className="w-6 h-6 text-chart-2" />
+                <h1 className="text-xl font-semibold">Settings</h1>
+            </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Gemini API Key</CardTitle>
+                    <CardDescription>
+                        Provide your own Gemini API key for your team to use search and
+                        Q&A. Without a key, the workspace is limited to 50 queries per
+                        month.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {settings?.hasApiKey ? (
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                <CheckCircleIcon className="w-4 h-4" />
+                                API key configured - unlimited queries
+                            </div>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={handleRemove}
+                                disabled={isPending}
+                            >
+                                {isPending ? (
+                                    <Spinner className="w-3.5 h-3.5" />
+                                ) : (
+                                    "Remove key"
+                                )}
+                            </Button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="rounded border border-border p-3 text-xs text-muted-foreground space-y-1">
+                                <p>
+                                    Get your API key from{" "}
+                                    <a
+                                        href="https://aistudio.google.com/apikey"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-foreground underline underline-offset-2"
+                                    >
+                                        Google AI Studio
+                                    </a>
+                                    .
+                                </p>
+                                <p>
+                                    The key is encrypted and stored securely. It is only used for
+                                    API calls made by members of this workspace.
+                                </p>
+                            </div>
+                            <Input
+                                type="password"
+                                placeholder="Paste your Gemini API key"
+                                value={apiKey}
+                                onChange={(e) => {
+                                    setApiKey(e.target.value);
+                                    setError("");
+                                }}
+                                disabled={isPending}
+                            />
+                            {error && <p className="text-xs text-destructive">{error}</p>}
+                            {success && (
+                                <p className="text-xs text-green-600 dark:text-green-400">
+                                    Saved successfully
+                                </p>
+                            )}
+                            <Button
+                                onClick={handleSave}
+                                disabled={isPending || !apiKey.trim()}
+                            >
+                                {isPending ? (
+                                    <Spinner className="w-3.5 h-3.5" />
+                                ) : (
+                                    "Save key"
+                                )}
+                            </Button>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+    );
+}

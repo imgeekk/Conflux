@@ -5,6 +5,9 @@ import {
   createAnswer,
   getMemberByUserIdAndWorkspaceId,
   getQuestionById,
+  getUsageCount,
+  getWorkspaceById,
+  incrementUsage,
 } from "@/lib/services";
 export async function POST(
   req: NextRequest,
@@ -29,7 +32,19 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const workspace = await getWorkspaceById(question.space.workspaceId);
+
   try {
+    if (!workspace?.geminiApiKey) {
+      const usage = await getUsageCount(question.space.workspaceId, "query");
+      if (usage && usage >= 50) {
+        return NextResponse.json(
+          { error: "Usage limit reached. Please upgrade your plan." },
+          { status: 403 },
+        );
+      }
+    }
+
     const result = await answerQuestion(
       question.text,
       question.space.workspaceId,
@@ -42,6 +57,7 @@ export async function POST(
       lowConfidence: result.lowConfidence,
       expert: result.expert,
     });
+    await incrementUsage(question.space.workspaceId, "query");
     const updated = await getQuestionById(questionId);
     return NextResponse.json(updated);
   } catch {

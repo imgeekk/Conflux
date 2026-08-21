@@ -39,7 +39,7 @@ export async function PATCH(
 
     await Promise.allSettled([
         previouslyAcceptedId ? deleteAnswerChunks(previouslyAcceptedId) : Promise.resolve(),
-        embedAnswer(answerId, answer.body, answer.question.text)
+        embedAnswer(answerId, answer.body, answer.question.text, answer.question.space.workspaceId),
     ]);
 
     return NextResponse.json(accepted);

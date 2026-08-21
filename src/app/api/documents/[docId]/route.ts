@@ -6,7 +6,7 @@ import {
   getMemberByUserIdAndWorkspaceId,
   updateDocument,
 } from "@/lib/services";
-import { embedDocument } from "@/lib/rag"
+import { embedDocument } from "@/lib/rag";
 
 export async function GET(
   _req: NextRequest,
@@ -62,7 +62,7 @@ export async function PATCH(
 
     if (content !== undefined && content.trim()) {
       // no await to embed so that it happens in the background and doesn't block the response time
-      embedDocument(updated.id, updated.title, content)
+      embedDocument(updated.id, updated.title, content, doc.space.workspaceId);
     }
 
     return NextResponse.json(updated);

@@ -135,7 +135,7 @@ export default function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Settings">
-              <Link href="/settings">
+              <Link href="/workspace/settings">
                 <GearIcon className="w-4 h-4" />
                 <span>Settings</span>
               </Link>

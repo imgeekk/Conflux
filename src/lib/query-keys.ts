@@ -30,4 +30,7 @@ export const queryKeys = {
   invites: {
     byWorkspace: (id: string) => ["invites", id] as const,
   },
+  settings: {
+    all: ["settings"] as const,
+  },
 };

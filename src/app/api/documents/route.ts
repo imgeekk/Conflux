@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
-import { embedDocument } from "@/lib/rag"
+import { embedDocument } from "@/lib/rag";
 import {
   getMemberByUserIdAndWorkspaceId,
   getSpaceById,
@@ -8,9 +8,7 @@ import {
   getDocumentsBySpaceId,
 } from "@/lib/services";
 
-export async function GET(
-  req: NextRequest
-) {
+export async function GET(req: NextRequest) {
   try {
     const session = await requireSession();
     const spaceId = req.nextUrl.searchParams.get("spaceId");
@@ -70,7 +68,12 @@ export async function POST(req: NextRequest) {
     );
 
     if (content?.trim()) {
-        await embedDocument(document.id, document.title, content)
+      await embedDocument(
+        document.id,
+        document.title,
+        content,
+        space.workspaceId,
+      );
     }
 
     return NextResponse.json(document);
@@ -79,4 +82,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-

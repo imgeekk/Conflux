@@ -7,6 +7,9 @@ import {
   getQuestionById,
   getQuestionsBySpaceId,
   getSpaceById,
+  getUsageCount,
+  getWorkspaceById,
+  incrementUsage,
 } from "@/lib/services";
 import { answerQuestion } from "@/lib/rag";
 
@@ -52,6 +55,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Space not found" }, { status: 404 });
     }
 
+    const workspace = await getWorkspaceById(space.workspaceId);
     const member = await getMemberByUserIdAndWorkspaceId(
       session.user.id,
       space.workspaceId,
@@ -63,6 +67,18 @@ export async function POST(req: NextRequest) {
     const question = await createQuestion(text, spaceId, session.user.id);
 
     try {
+      if (!workspace?.geminiApiKey) {
+        const usage = await getUsageCount(space.workspaceId, "query");
+        if (usage && usage >= 50) {
+          return NextResponse.json(
+            {
+              error:
+                "Usage limit reached. Please set your Gemini API key to continue.",
+            },
+            { status: 429 },
+          );
+        }
+      }
       const result = await answerQuestion(text, space.workspaceId);
       await createAnswer({
         questionId: question.id,
@@ -72,6 +88,7 @@ export async function POST(req: NextRequest) {
         lowConfidence: result.lowConfidence,
         expert: result.expert,
       });
+      await incrementUsage(space.workspaceId, "query");
     } catch (error) {
       console.error("AI answering failed:", error);
     }

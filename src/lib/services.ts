@@ -34,6 +34,13 @@ export async function getWorkspaceByUserId(userId: string) {
   return workspace;
 }
 
+export async function getWorkspaceById(workspaceId: string) {
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+  });
+  return workspace;
+}
+
 export async function joinWorkspaceWithCode(code: string, userId: string) {
   const invite = await getInviteByCode(code);
   if (!invite)
@@ -725,4 +732,29 @@ export async function getInviteById(inviteId: string) {
     },
   });
   return invite;
+}
+
+// usage services
+
+export async function incrementUsage(
+  workspaceId: string,
+  type: "query" | "embedding",
+) {
+  const month = new Date().toISOString().slice(0, 7); // YYYY-MM
+  await prisma.usageRecord.upsert({
+    where: { workspaceId_type_month: { workspaceId, type, month } },
+    update: { count: { increment: 1 } },
+    create: { workspaceId, month, type, count: 1 },
+  });
+}
+
+export async function getUsageCount(
+  workspaceId: string,
+  type: "query" | "embedding",
+) {
+  const month = new Date().toISOString().slice(0, 7);
+  const record = await prisma.usageRecord.findUnique({
+    where: { workspaceId_type_month: { workspaceId, type, month } },
+  });
+  return record?.count ?? 0;
 }

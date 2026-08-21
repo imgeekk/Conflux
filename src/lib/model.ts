@@ -1,17 +1,37 @@
 import { GoogleGenAI } from "@google/genai";
+import { prisma } from "./prisma";
+import { decryptApiKey } from "./crypto";
 
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const defaultClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export const answeringModel = "gemma-4-31b";
+export const answeringModel = "gemini-2.5-flash-lite";
 export const embeddingModel = "gemini-embedding-001";
 
-export async function generateEmbedding(text: string): Promise<number[]> {
-  const result = await genAI.models.embedContent({
+async function getClient(workspaceId?: string) {
+  if (!workspaceId) return defaultClient;
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { geminiApiKey: true },
+  });
+
+  if (!workspace?.geminiApiKey) return defaultClient;
+
+  const decryptedApiKey = decryptApiKey(workspace.geminiApiKey);
+  return new GoogleGenAI({ apiKey: decryptedApiKey });
+}
+
+export async function generateEmbedding(
+  text: string,
+  workspaceId?: string,
+): Promise<number[]> {
+  const client = await getClient(workspaceId);
+  const result = await client.models.embedContent({
     model: embeddingModel,
     contents: [{ text }],
     config: {
       outputDimensionality: 768,
-    }
+    },
   });
   return result.embeddings?.at(0)?.values ?? [];
 }
@@ -19,6 +39,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 export async function generateAnswer(
   question: string,
   contextChunks: string[],
+  workspaceId?: string,
 ): Promise<string> {
   const context = contextChunks.join("\n\n---\n\n");
 
@@ -34,7 +55,8 @@ Question: ${question}
 
 Answer:`;
 
-  const result = await genAI.models.generateContent({
+  const client = await getClient(workspaceId);
+  const result = await client.models.generateContent({
     model: answeringModel,
     contents: [{ text: prompt }],
   });
