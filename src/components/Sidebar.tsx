@@ -20,7 +20,6 @@ import {
   HouseIcon,
   MagnifyingGlassIcon,
   QuestionIcon,
-  StackIcon,
   PlusIcon,
   GearIcon,
   SignOutIcon,
@@ -53,7 +52,7 @@ export default function AppSidebar() {
     <SidebarPrimitive collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-1.5 px-2 py-1">
-          <StackIcon className="w-4 h-4 shrink-0 text-sidebar-foreground" />
+          <img src="/logo.png" alt="Conflux Logo" className="h-5 w-5" />
           <span className="truncate text-sm font-semibold text-sidebar-foreground">
             {workspace?.name ?? "Conflux"}
           </span>
