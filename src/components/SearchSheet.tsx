@@ -127,7 +127,7 @@ export default function SearchSheet({ open, onOpenChange }: SearchSheetProps) {
                   {expert.image ? (
                     <img src={expert.image} alt={expert.name} className="size-8 rounded-full shrink-0" />
                   ) : (
-                    <div className="size-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
+                    <div className="size-8 rounded-full bg-chart-2/10 flex items-center justify-center text-xs font-medium shrink-0">
                       {expert.name.charAt(0).toUpperCase()}
                     </div>
                   )}
