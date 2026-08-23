@@ -10,7 +10,7 @@ export function useSettings(workspaceId: string) {
                 const data = await res.json();
                 throw new Error(data.error || "Failed to fetch settings");
             }
-            return res.json() as Promise<{ id: string; name: string; hasApiKey: boolean }>;
+            return res.json() as Promise<{ id: string; name: string; hasApiKey: boolean, isOwner: boolean }>;
         }
     })
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { getWorkspaceById } from "@/lib/services";
+import { getMemberByUserIdAndWorkspaceId, getWorkspaceById } from "@/lib/services";
 import { encryptApiKey } from "@/lib/crypto";
 
 export async function GET(
@@ -9,8 +9,16 @@ export async function GET(
   { params }: { params: Promise<{ workspaceId: string }> },
 ) {
   try {
-    await requireSession();
+    const session = await requireSession();
     const { workspaceId } = await params;
+
+    const member = await getMemberByUserIdAndWorkspaceId(session.user.id, workspaceId);
+    if (!member) {
+      return NextResponse.json(
+        { error: "Member not found" },
+        { status: 404 },
+      );
+    }
 
     const workspace = await getWorkspaceById(workspaceId);
     if (!workspace) {
@@ -24,6 +32,7 @@ export async function GET(
       id: workspace.id,
       name: workspace.name,
       hasApiKey: !!workspace.geminiApiKey,
+      isOwner: member.role === "OWNER",
     });
   } catch (error) {
     console.error("Error fetching workspace settings:", error);
@@ -39,10 +48,17 @@ export async function PATCH(
   { params }: { params: Promise<{ workspaceId: string }> },
 ) {
   try {
-    await requireSession();
+    const session = await requireSession();
     const { workspaceId } = await params;
-
     const { apiKey } = await req.json();
+
+    const member = await getMemberByUserIdAndWorkspaceId(session.user.id, workspaceId);
+    if (!member || member.role !== "OWNER") {
+      return NextResponse.json(
+        { error: "Forbidden" },
+        { status: 403 },
+      );
+    }
 
     const workspace = await getWorkspaceById(workspaceId);
     if (!workspace) {

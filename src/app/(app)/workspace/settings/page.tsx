@@ -12,7 +12,7 @@ import {
     CardDescription,
     CardContent,
 } from "@/components/ui/card";
-import { GearIcon, CheckCircleIcon } from "@phosphor-icons/react";
+import { GearIcon, CheckCircleIcon, WarningOctagonIcon } from "@phosphor-icons/react";
 import Loader from "@/components/Loader";
 import { useSettings, useUpdateSettings } from "@/hooks/use-settings";
 
@@ -72,26 +72,33 @@ export default function SettingsPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    {settings?.isOwner === false && (
+                        <p className="text-xs text-destructive">
+                            Only the workspace owner can manage the API key.
+                        </p>
+                    )}
                     {settings?.hasApiKey ? (
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                        <div className={`flex items-center ${settings.isOwner ? 'justify-between' : 'justify-start'}`}>
+                            <div className="flex items-center gap-2 text-sm text-chart-2">
                                 <CheckCircleIcon className="w-4 h-4" />
                                 API key configured - unlimited queries
                             </div>
-                            <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={handleRemove}
-                                disabled={isPending}
-                            >
-                                {isPending ? (
-                                    <Spinner className="w-3.5 h-3.5" />
-                                ) : (
-                                    "Remove key"
-                                )}
-                            </Button>
+                            {settings.isOwner && (
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={handleRemove}
+                                    disabled={isPending || !settings?.isOwner}
+                                >
+                                    {isPending ? (
+                                        <Spinner className="w-3.5 h-3.5" />
+                                    ) : (
+                                        "Remove key"
+                                    )}
+                                </Button>
+                            )}
                         </div>
-                    ) : (
+                    ) : (settings?.isOwner ? (
                         <>
                             <div className="rounded border border-border p-3 text-xs text-muted-foreground space-y-1">
                                 <p>
@@ -119,17 +126,12 @@ export default function SettingsPage() {
                                     setApiKey(e.target.value);
                                     setError("");
                                 }}
-                                disabled={isPending}
+                                disabled={isPending || !settings?.isOwner}
                             />
                             {error && <p className="text-xs text-destructive">{error}</p>}
-                            {success && (
-                                <p className="text-xs text-green-600 dark:text-green-400">
-                                    Saved successfully
-                                </p>
-                            )}
                             <Button
                                 onClick={handleSave}
-                                disabled={isPending || !apiKey.trim()}
+                                disabled={isPending || !settings?.isOwner || !apiKey.trim()}
                             >
                                 {isPending ? (
                                     <Spinner className="w-3.5 h-3.5" />
@@ -138,7 +140,14 @@ export default function SettingsPage() {
                                 )}
                             </Button>
                         </>
+                    ) : (
+                        <div className="flex items-center gap-2 text-sm text-destructive">
+                            <WarningOctagonIcon className="w-4 h-4" />
+                            API key is not yet configured.
+                        </div>
+                    )
                     )}
+
                 </CardContent>
             </Card>
         </div>
