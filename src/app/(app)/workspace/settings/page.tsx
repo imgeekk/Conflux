@@ -19,24 +19,18 @@ import { useSettings, useUpdateSettings } from "@/hooks/use-settings";
 export default function SettingsPage() {
     const { workspace } = useWorkspace();
     const [apiKey, setApiKey] = useState("");
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
     const { data: settings, isLoading, error: settingsError } = useSettings(workspace?.id ?? "");
     const { mutate: updateSettings, isPending, error: updateError } = useUpdateSettings(workspace?.id ?? "");
 
     async function handleSave() {
         if (!apiKey.trim()) return;
-        setError("");
+        updateError && (updateError.message = "");
         updateSettings({ apiKey });
-        setSuccess(true);
-        setError(updateError ? updateError.message : "");
     }
 
     async function handleRemove() {
-        setError("");
+        updateError && (updateError.message = "");
         updateSettings({ apiKey: "" });
-        setSuccess(true);
-        setError(updateError ? updateError.message : "");
     }
 
     if (isLoading) {
@@ -81,7 +75,7 @@ export default function SettingsPage() {
                         <div className={`flex items-center ${settings.isOwner ? 'justify-between' : 'justify-start'}`}>
                             <div className="flex items-center gap-2 text-sm text-chart-2">
                                 <CheckCircleIcon className="w-4 h-4" />
-                                API key configured - unlimited queries
+                                API key is already configured
                             </div>
                             {settings.isOwner && (
                                 <Button
@@ -89,6 +83,7 @@ export default function SettingsPage() {
                                     size="sm"
                                     onClick={handleRemove}
                                     disabled={isPending || !settings?.isOwner}
+                                    className="w-22"
                                 >
                                     {isPending ? (
                                         <Spinner className="w-3.5 h-3.5" />
@@ -124,14 +119,17 @@ export default function SettingsPage() {
                                 value={apiKey}
                                 onChange={(e) => {
                                     setApiKey(e.target.value);
-                                    setError("");
+                                    updateError && (updateError.message = "");
                                 }}
                                 disabled={isPending || !settings?.isOwner}
                             />
-                            {error && <p className="text-xs text-destructive">{error}</p>}
+                            {updateError && updateError.message && (
+                                <p className="text-xs text-destructive">{updateError.message}</p>
+                            )}
                             <Button
                                 onClick={handleSave}
                                 disabled={isPending || !settings?.isOwner || !apiKey.trim()}
+                                className="w-20"
                             >
                                 {isPending ? (
                                     <Spinner className="w-3.5 h-3.5" />
