@@ -384,6 +384,29 @@ export async function createAnswer({
       expertId: expert?.id || null,
     },
   });
+
+  const answerAuthorId = answer.authorId;
+  if (answerAuthorId) {
+    const question = await prisma.question.findUnique({
+      where: { id: questionId },
+      select: {
+        space: {
+          select: {
+            documents: { select: { tags: { select: { tag: true } } } },
+          },
+        },
+      },
+    });
+    if (question?.space.documents) {
+      const tagIds = question.space.documents.flatMap((doc) =>
+        doc.tags.map((t) => t.tag.id),
+      );
+      await Promise.all([
+        ...tagIds.map((tagId) => addExpertScore(answerAuthorId, tagId, 2)),
+      ]);
+    }
+  }
+
   return answer;
 }
 
