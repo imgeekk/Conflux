@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useLightTheme } from "@/hooks/use-light-theme";
 import {
   MagnifyingGlassIcon,
   BookOpenIcon,
@@ -199,6 +200,7 @@ function ScrollAwareHeader({ scrollContainer }: { scrollContainer: React.RefObje
 /* ─── page ─────────────────────────────────────────────────────────── */
 
 export default function LandingPage() {
+  useLightTheme();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   return (
     <div ref={scrollContainerRef} className="h-full overflow-y-auto bg-chart-1/5">
