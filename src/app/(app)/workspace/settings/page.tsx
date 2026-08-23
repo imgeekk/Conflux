@@ -30,7 +30,7 @@ export default function SettingsPage() {
 
     async function handleRemove() {
         updateError && (updateError.message = "");
-        updateSettings({ apiKey: "" });
+        updateSettings({ apiKey: null });
     }
 
     if (isLoading) {

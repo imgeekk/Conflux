@@ -18,7 +18,7 @@ export function useSettings(workspaceId: string) {
 export function useUpdateSettings(workspaceId: string) {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (updatedSettings: { apiKey: string }) => {
+        mutationFn: async (updatedSettings: { apiKey: string | null }) => {
             const res = await fetch(`/api/workspace/${workspaceId}/settings`, {
                 method: "PATCH",
                 headers: {

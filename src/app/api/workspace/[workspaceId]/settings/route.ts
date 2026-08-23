@@ -68,7 +68,7 @@ export async function PATCH(
       );
     }
 
-    if (apiKey === null || apiKey === "") {
+    if (apiKey === null) {
       await prisma.workspace.update({
         where: { id: workspace.id },
         data: { geminiApiKey: null },
@@ -76,7 +76,7 @@ export async function PATCH(
       return NextResponse.json({ hasApiKey: false });
     }
 
-    if (!apiKey.trim() || typeof apiKey !== "string") {
+    if (apiKey === "" || !apiKey.trim() || typeof apiKey !== "string") {
       return NextResponse.json({ error: "Invalid API key" }, { status: 400 });
     }
 
