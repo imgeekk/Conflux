@@ -17,7 +17,7 @@ export function useSpaces(workspaceId: string, initialSpaces?: ApiSpace[]) {
   });
 }
 
-export function useCreateSpace(workspaceId: string) {
+export function useCreateSpace() {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -20,7 +20,7 @@ export default function Page() {
     mutate: createSpace,
     isPending,
     isError,
-  } = useCreateSpace(workspace?.id ?? "");
+  } = useCreateSpace();
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
