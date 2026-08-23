@@ -19,13 +19,19 @@ import { useSettings, useUpdateSettings } from "@/hooks/use-settings";
 export default function SettingsPage() {
     const { workspace } = useWorkspace();
     const [apiKey, setApiKey] = useState("");
+    const [success, setSuccess] = useState(false);
     const { data: settings, isLoading, error: settingsError } = useSettings(workspace?.id ?? "");
     const { mutate: updateSettings, isPending, error: updateError } = useUpdateSettings(workspace?.id ?? "");
 
     async function handleSave() {
         if (!apiKey.trim()) return;
         updateError && (updateError.message = "");
-        updateSettings({ apiKey });
+        updateSettings({ apiKey }, {
+            onSuccess: () => {
+                setSuccess(true);
+                setTimeout(() => setSuccess(false), 3000);
+            },
+        });
     }
 
     async function handleRemove() {
@@ -125,6 +131,11 @@ export default function SettingsPage() {
                             />
                             {updateError && updateError.message && (
                                 <p className="text-xs text-destructive">{updateError.message}</p>
+                            )}
+                            {success && (
+                                <p className="text-xs text-chart-2">
+                                    Saved successfully!
+                                </p>
                             )}
                             <Button
                                 onClick={handleSave}
