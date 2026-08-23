@@ -24,7 +24,8 @@ function SignupForm() {
   const [loading, setLoading] = useState(false);
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/home";
+  const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/new-workspace";
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,6 +37,10 @@ function SignupForm() {
       email,
       password,
       callbackURL: callbackUrl,
+    }, {
+      onSuccess: () => {
+        router.push(callbackUrl);
+      }
     });
 
     if (error) {

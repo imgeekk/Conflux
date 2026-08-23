@@ -23,6 +23,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
 
   const searchParams = useSearchParams()
+  const router = useRouter()
   const callbackUrl = searchParams.get("callbackUrl") ?? "/home"
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -34,6 +35,10 @@ function LoginForm() {
       email,
       password,
       callbackURL: callbackUrl,
+    }, {
+      onSuccess: () => {
+        router.push(callbackUrl)
+      }
     })
 
     if (error) {
