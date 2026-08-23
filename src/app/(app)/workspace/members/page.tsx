@@ -179,7 +179,7 @@ export default function MembersPage() {
                   onClick={() => handleCopy(inv.id, inv.code)}
                 >
                   <CopyIcon className="w-3.5 h-3.5" />
-                  {copiedId === inv.id ? "Copied" : "Copy"}
+                  {copiedId === inv.id ? "Copied" : "Copy Link"}
                 </Button>
                 {!inv.revoked && (
                   <Button
