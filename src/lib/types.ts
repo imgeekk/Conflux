@@ -51,7 +51,7 @@ export type ApiAnswer = {
   isAiDraft: boolean;
   isAccepted: boolean;
   confidence: number | null;
-  lowConfidence: boolean | null;
+  lowConfidence: boolean;
   expertId: string | null;
   createdAt: string;
   updatedAt: string;
