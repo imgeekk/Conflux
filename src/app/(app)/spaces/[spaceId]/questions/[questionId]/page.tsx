@@ -9,8 +9,6 @@ import {
   SparkleIcon,
   SmileySadIcon,
   PencilSimpleLineIcon,
-  XIcon,
-  PaperPlaneTiltIcon,
   QuestionMarkIcon,
   WarningIcon,
 } from "@phosphor-icons/react";

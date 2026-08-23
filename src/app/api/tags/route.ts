@@ -3,7 +3,6 @@ import { requireSession } from "@/lib/session";
 import {
   getTags,
   createTag,
-  getMemberByUserIdAndWorkspaceId,
 } from "@/lib/services";
 
 export async function GET() {

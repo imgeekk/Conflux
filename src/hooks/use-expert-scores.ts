@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
-import { ApiExpertScoreWithUser, ApiExpertScoreWithTag } from "@/lib/types";
+import { ApiExpertScoreWithUser } from "@/lib/types";
 
 export function useExpertScoresByTag(tagId: string) {
   return useQuery({

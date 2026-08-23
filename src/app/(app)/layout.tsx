@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import { getSpacesByWorkspaceId, getWorkspaceByUserId } from "@/lib/services";
+import { getWorkspaceByUserId } from "@/lib/services";
 import { WorkspaceProvider } from "@/lib/workspace-context";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 

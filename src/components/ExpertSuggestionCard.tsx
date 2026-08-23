@@ -1,4 +1,3 @@
-import { WarningIcon } from "@phosphor-icons/react";
 
 interface ExpertSuggestionCardProps {
     expert: { id: string; name: string; image: string | null };

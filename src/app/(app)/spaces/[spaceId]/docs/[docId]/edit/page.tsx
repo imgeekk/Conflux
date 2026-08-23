@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import Link from "next/link";
