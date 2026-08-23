@@ -438,12 +438,15 @@ export async function acceptAnswer(answerId: string, questionId: string) {
   ]);
 
   const authorId = accepted.authorId;
-  const tagIds = accepted.question.space.documents.flatMap((doc) =>
-    doc.tags.map((t) => t.tag.id),
-  );
-  await Promise.all([
-    tagIds.map((tagId) => addExpertScore(authorId!, tagId, 10)),
-  ]);
+  if (authorId) {
+    // we skip adding expert score if the answer has no author ie when its ai generated
+    const tagIds = accepted.question.space.documents.flatMap((doc) =>
+      doc.tags.map((t) => t.tag.id),
+    );
+    await Promise.all([
+      tagIds.map((tagId) => addExpertScore(authorId!, tagId, 10)),
+    ]);
+  }
 
   return { accepted, previouslyAcceptedId: previouslyAccepted?.id ?? null };
 }
