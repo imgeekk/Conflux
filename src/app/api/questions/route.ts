@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
         }
       }
       const result = await answerQuestion(text, space.workspaceId);
+      incrementUsage(space.workspaceId, "query");
       await createAnswer({
         questionId: question.id,
         body: result.answer,
@@ -88,7 +89,6 @@ export async function POST(req: NextRequest) {
         lowConfidence: result.lowConfidence,
         expert: result.expert,
       });
-      await incrementUsage(space.workspaceId, "query");
     } catch (error) {
       console.error("AI answering failed:", error);
     }
