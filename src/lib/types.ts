@@ -1,7 +1,11 @@
 export type Workspace = {
   id: string;
+  createdAt: Date;
   name: string;
   slug: string;
+  geminiApiKey: string | null;
+  updatedAt: Date;
+  role: "OWNER" | "MEMBER";
 };
 
 export type WorkspaceContextValues = {

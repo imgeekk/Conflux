@@ -30,7 +30,7 @@ export async function getWorkspaceByUserId(userId: string) {
     orderBy: { createdAt: "desc" }, // this would be the most recent workspace the user joined
     include: { workspace: true },
   });
-  const workspace = membership?.workspace ?? null;
+  const workspace = membership?.workspace ? { ...membership.workspace, role: membership.role } : null;
   return workspace;
 }
 

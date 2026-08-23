@@ -40,9 +40,7 @@ export default function MembersPage() {
   const [maxUses, setMaxUses] = useState("1");
   const parsedMaxUses = maxUses.trim() === "" ? null : Number(maxUses);
   const maxUsesValid = parsedMaxUses === null || (Number.isInteger(parsedMaxUses) && parsedMaxUses > 0);
-  const isOwner = members.some(
-    (m) => m.userId === currentUserId && m.role === "OWNER",
-  );
+
   function handleGenerate() {
     if (!maxUsesValid) {
       throw new Error("maxUses must be a positive integer or null");
@@ -72,7 +70,16 @@ export default function MembersPage() {
       </div>
     );
   }
-  if (!isOwner) {
+
+  if (!workspace) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-destructive">Workspace not found.</p>
+      </div>
+    );
+  }
+
+  if (workspace?.role !== "OWNER") {
     return (
       <div className="w-2xl mx-auto pt-16 text-center text-sm text-muted-foreground">
         Only the workspace owner can manage members.
