@@ -191,9 +191,9 @@ export async function createDocument(
   });
 
   if (tagIds?.length) {
-    await Promise.all(
-      tagIds.map((tagId) => addExpertScore(authorId, tagId, 5)),
-    );
+    await Promise.all([
+      ...tagIds.map((tagId) => addExpertScore(authorId, tagId, 5)),
+    ]);
   }
 
   return document;
@@ -240,8 +240,10 @@ export async function updateDocument(
     const removedTagIds = oldTagIds.filter((id) => !tagIds.includes(id));
     const addedTagIds = tagIds.filter((id) => !oldTagIds.includes(id));
     await Promise.all([
-      removedTagIds.map((tagId) => addExpertScore(oldDoc!.authorId, tagId, -5)),
-      addedTagIds.map((tagId) => addExpertScore(oldDoc!.authorId, tagId, 5)),
+      ...removedTagIds.map((tagId) =>
+        addExpertScore(oldDoc!.authorId, tagId, -5),
+      ),
+      ...addedTagIds.map((tagId) => addExpertScore(oldDoc!.authorId, tagId, 5)),
     ]);
   }
 
@@ -444,7 +446,7 @@ export async function acceptAnswer(answerId: string, questionId: string) {
       doc.tags.map((t) => t.tag.id),
     );
     await Promise.all([
-      tagIds.map((tagId) => addExpertScore(authorId!, tagId, 10)),
+      ...tagIds.map((tagId) => addExpertScore(authorId!, tagId, 10)),
     ]);
   }
 
