@@ -510,15 +510,6 @@ export async function getExpertScoresByTag(tagId: string) {
   return expertScores;
 }
 
-export async function getExpertScoresByUser(userId: string) {
-  const expertScores = await prisma.expertScore.findMany({
-    where: { userId, score: { gt: 0 } },
-    orderBy: { score: "desc" },
-    include: { tag: true },
-  });
-  return expertScores;
-}
-
 export async function getTopExpertsByTagIds(
   memberIds: string[],
   tagIds: string[],
