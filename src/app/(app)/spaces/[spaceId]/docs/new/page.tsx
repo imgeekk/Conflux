@@ -28,7 +28,7 @@ export default function NewDocPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="w-4xl mx-auto">
       <Link
         href={`/spaces/${spaceId}`}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"

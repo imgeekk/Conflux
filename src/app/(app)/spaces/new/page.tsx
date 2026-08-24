@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateSpace } from "@/hooks/use-spaces";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Page() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function Page() {
   }
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="w-4xl mx-auto">
       <Link
         href="/home"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -86,6 +87,7 @@ export default function Page() {
                 name="description"
                 rows={3}
                 placeholder="What kind of knowledge lives here?"
+                className="resize-none"
               />
             </div>
             {isError && (
@@ -94,8 +96,8 @@ export default function Page() {
               </p>
             )}
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={isPending || !workspace}>
-                {isPending ? "Creating..." : "Create space"}
+              <Button type="submit" disabled={isPending || !workspace} className="w-20">
+                {isPending ? <Spinner className="w-3.5 h-3.5" /> : "Create space"}
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/home">Cancel</Link>

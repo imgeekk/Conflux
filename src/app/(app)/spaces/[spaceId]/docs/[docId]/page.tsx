@@ -32,7 +32,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
   if (!member) notFound();
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <Link
           href={`/spaces/${spaceId}`}
@@ -72,7 +72,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
           {(doc as any).tags.map((dt: any) => (
             <span
               key={dt.tag.id}
-              className="inline-flex bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+              className="inline-flex bg-chart-2/10 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
             >
               {dt.tag.name}
             </span>

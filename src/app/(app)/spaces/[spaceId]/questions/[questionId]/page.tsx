@@ -97,7 +97,7 @@ export default function QuestionDetailPage() {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   return (
-    <div className="flex flex-col flex-1 max-w-3xl mx-auto w-full">
+    <div className="flex flex-col flex-1 w-4xl mx-auto">
       {/* Header */}
       <div className="shrink-0 pt-1 pb-3">
         <Button variant="ghost" asChild size="sm">
@@ -113,7 +113,7 @@ export default function QuestionDetailPage() {
         <Card>
           <CardContent>
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-chart-2/10 flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-8 h-8 bg-chart-2/10 flex items-center justify-center shrink-0 mt-0.5">
                 <QuestionMarkIcon className="w-5 h-5 shrink-0 text-chart-2 mt-0.5" />
               </div>
               <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export default function QuestionDetailPage() {
                     {new Date(acceptedAnswer.createdAt).toLocaleDateString()}
                   </div>
                   {acceptedAnswer.isAiDraft && acceptedAnswer.lowConfidence && (
-                    <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
+                    <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-2">
                       <WarningIcon className="w-4 h-4 shrink-0 mt-0.5" />
                       <span>The AI wasn't fully confident about this answer.</span>
                     </div>
@@ -184,7 +184,7 @@ export default function QuestionDetailPage() {
                       )}
                       {/* Low confidence warning */}
                       {answer.isAiDraft && answer.lowConfidence && (
-                        <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded px-3 py-2">
+                        <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-2">
                           <WarningIcon className="w-4 h-4 shrink-0 mt-0.5" />
                           <span>The AI isn't fully confident about this answer.</span>
                         </div>

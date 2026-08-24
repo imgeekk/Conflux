@@ -49,7 +49,7 @@ export default async function HomePage() {
   );
 
   return (
-    <div className="max-w-5xl mx-auto h-full flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="mb-8">
         <h1 className="text-xl font-semibold text-primary">
           Good to see you, {session.user.name?.split(" ")[0]}
@@ -85,7 +85,7 @@ export default async function HomePage() {
               {recentDocs.length === 0 ? (
                 <Card className="text-center flex-1">
                   <CardContent className="h-full flex flex-col items-center justify-center py-4">
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild className="pointer-events-none">
                       <FileIcon className="w-10 h-10 mb-2 text-muted-foreground" />
                     </Button>
                     <p className="text-sm text-muted-foreground mb-0.5">
@@ -106,8 +106,8 @@ export default async function HomePage() {
                       className="w-full h-auto justify-start gap-3 p-3"
                     >
                       <Link href={`/spaces/${doc.spaceId}/docs/${doc.id}`}>
-                        <div className="w-8 h-8 bg-muted flex items-center justify-center shrink-0">
-                          <FileIcon className="w-4 h-4 text-muted-foreground" />
+                        <div className="w-8 h-8 bg-chart-2/10 flex items-center justify-center shrink-0">
+                          <FileIcon className="w-4 h-4 text-chart-2" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">
@@ -136,7 +136,7 @@ export default async function HomePage() {
               {recentQuestions.length === 0 ? (
                 <Card className="text-center flex-1">
                   <CardContent className="h-full flex flex-col items-center justify-center py-4">
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" asChild  className="pointer-events-none">
                       <QuestionMarkIcon className="w-10 h-10 mb-2 text-muted-foreground" />
                     </Button>
                     <p className="text-sm text-muted-foreground mb-0.5">
@@ -154,8 +154,8 @@ export default async function HomePage() {
                       className="w-full h-auto justify-start gap-3 p-3"
                     >
                       <Link href={`/spaces/${q.spaceId}/questions/${q.id}`}>
-                        <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
-                          <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
+                        <div className="w-8 h-8 bg-chart-2/10 flex items-center justify-center shrink-0">
+                          <QuestionMarkIcon className="w-4 h-4 text-chart-2" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">

@@ -48,7 +48,7 @@ export default async function SpacePage({
   const experts = await getTopExpertsInSpace(spaceId, 5);
 
   return (
-    <div className="max-w-5xl mx-auto h-full flex flex-col">
+    <div className="h-full flex flex-col">
       {/* Space header */}
       <div className="flex items-start justify-between mb-8">
         <div>
@@ -141,8 +141,8 @@ export default async function SpacePage({
                       className="w-full h-auto justify-start gap-3 p-3"
                     >
                       <Link href={`/spaces/${spaceId}/docs/${doc.id}`}>
-                        <div className="w-8 h-8 bg-muted flex items-center justify-center shrink-0">
-                          <FileIcon className="w-4 h-4 text-muted-foreground" />
+                        <div className="w-8 h-8 bg-chart-2/10 flex items-center justify-center shrink-0">
+                          <FileIcon className="w-4 h-4 text-chart-2" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">
@@ -208,8 +208,8 @@ export default async function SpacePage({
                       className="w-full h-auto justify-start gap-3 p-3"
                     >
                       <Link href={`/spaces/${spaceId}/questions/${q.id}`}>
-                        <div className="w-8 h-8 bg-chart-4/10 flex items-center justify-center shrink-0">
-                          <QuestionMarkIcon className="w-4 h-4 text-chart-4" />
+                        <div className="w-8 h-8 bg-chart-2/10 flex items-center justify-center shrink-0">
+                          <QuestionMarkIcon className="w-4 h-4 text-chart-2" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">
@@ -232,8 +232,8 @@ export default async function SpacePage({
             </div>
           </div>
         </div>
-        <aside>
-          <ExpertPanel title="Top experts" experts={experts} />
+        <aside className="w-64 shrink-0">
+          <ExpertPanel title={`Top Experts In ${space?.name}`} experts={experts} />
         </aside>
       </div>
     </div>

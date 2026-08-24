@@ -51,7 +51,7 @@ export default function QuestionsPage() {
     }
   }
   return (
-    <div className="flex flex-col h-[calc(100dvh-6rem)] w-3xl max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100dvh-6rem)] w-4xl mx-auto">
       <div id="header" className="shrink-0 pt-1 pb-3">
         <Button variant="ghost" asChild size="sm">
           <Link href={`/spaces/${spaceId}`}>
@@ -84,7 +84,9 @@ export default function QuestionsPage() {
               <>
                 <CardContent>
                   <div className="flex items-start gap-3">
-                    <QuestionMarkIcon className="w-5 h-5 shrink-0 text-chart-2 mt-0.5" />
+                    <div className="w-8 h-8 bg-chart-2/10 mt-0.5 flex items-center justify-center shrink-0">
+                      <QuestionMarkIcon className="w-4 h-4 text-chart-2" />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{q.text}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
@@ -155,10 +157,14 @@ export default function QuestionsPage() {
                         <SmileySadIcon className="w-3.5 h-3.5" />
                         AI couldn't generate an answer
                         <Button
-                          variant="link"
+                          variant="ghost"
                           size="sm"
-                          className="h-auto p-0 text-xs"
-                          onClick={() => handleRetry(q.id)}
+                          className="z-10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleRetry(q.id);
+                          }}
                         >
                           Try again
                         </Button>
