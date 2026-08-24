@@ -27,6 +27,18 @@ export function ExpertBadge({ tagId }: { tagId: string }) {
               key={e.user.id}
               className="flex items-center gap-2 px-2 py-1.5 text-xs"
             >
+              {e.user.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={e.user.image}
+                  alt={e.user.name}
+                  className="size-6 rounded-full shrink-0"
+                />
+              ) : (
+                <div className="size-6 rounded-full bg-chart-2/10 flex items-center justify-center text-xs font-medium shrink-0">
+                  {e.user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <span className="font-medium text-foreground">
                 {e.user.name}
               </span>
