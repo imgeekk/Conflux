@@ -186,7 +186,7 @@ function ScrollAwareHeader({ scrollContainer }: { scrollContainer: React.RefObje
 
         <div className="flex flex-1 items-center justify-end gap-2">
           <Link href="/login">
-            <Button variant="outline">Log in</Button>
+            <Button variant="outline" className="hidden sm:inline-flex">Log in</Button>
           </Link>
           <Link href="/login">
             <Button>Get started free</Button>

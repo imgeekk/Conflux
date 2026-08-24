@@ -103,12 +103,12 @@ export function TipTapEditor({
   return (
     <div
       className={
-        readOnly ? "" : "border border-border overflow-hidden bg-background"
+        readOnly ? "" : "border border-border bg-background overflow-hidden min-w-0"
       }
     >
       <EditorContext.Provider value={{ editor }}>
         {!readOnly && (
-          <Toolbar>
+          <Toolbar className="min-w-0">
             <Spacer />
 
             <ToolbarGroup>
@@ -166,7 +166,7 @@ export function TipTapEditor({
           </Toolbar>
         )}
 
-        <div className="overflow-y-auto max-h-[calc(100vh-280px)] scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/40">
+        <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh-280px)] scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/40">
           <EditorContent editor={editor} role="presentation" />
         </div>
       </EditorContext.Provider>

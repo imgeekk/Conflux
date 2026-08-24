@@ -57,14 +57,14 @@ export default function EditDocPage() {
   if (!doc) {
     return (
       <div className="h-full overflow-y-auto">
-        <div className="w-4xl mx-auto">Document not found</div>
+        <div className="w-full max-w-4xl mx-auto">Document not found</div>
       </div>
     );
   }
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="w-4xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         <Link
           href={`/spaces/${spaceId}/docs/${docId}`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -108,13 +108,13 @@ export default function EditDocPage() {
           </div>
 
           <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="flex-1 sm:flex-none">
               <Link href={`/spaces/${spaceId}/docs/${docId}`}>Cancel</Link>
             </Button>
             <Button
               type="submit"
               disabled={isPending || !changed}
-              className="w-28"
+              className="flex-1 sm:flex-none sm:w-28"
             >
               {isPending ? <Spinner /> : "Save changes"}
             </Button>

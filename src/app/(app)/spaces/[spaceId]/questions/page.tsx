@@ -51,7 +51,7 @@ export default function QuestionsPage() {
     }
   }
   return (
-    <div className="flex flex-col h-[calc(100dvh-6rem)] w-4xl mx-auto">
+    <div className="flex flex-col h-[calc(100dvh-6rem)] w-full max-w-4xl mx-auto">
       <div id="header" className="shrink-0 pt-1 pb-3">
         <Button variant="ghost" asChild size="sm">
           <Link href={`/spaces/${spaceId}`}>

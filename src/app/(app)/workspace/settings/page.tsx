@@ -56,7 +56,7 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="w-2xl mx-auto flex flex-col gap-6">
+        <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
             <div className="flex items-center gap-2">
                 <GearIcon className="w-6 h-6 text-chart-2" />
                 <h1 className="text-xl font-semibold">Settings</h1>

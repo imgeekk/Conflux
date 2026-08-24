@@ -28,7 +28,7 @@ export default function NewDocPage() {
   }
 
   return (
-    <div className="w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto">
       <Link
         href={`/spaces/${spaceId}`}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -65,10 +65,10 @@ export default function NewDocPage() {
             />
           </div>
           <div className="flex gap-3 shrink-0 sm:mt-6.5">
-            <Button type="submit" disabled={isPending || !title.trim()} className="w-30">
+            <Button type="submit" disabled={isPending || !title.trim()} className="flex-1 sm:flex-none sm:w-30">
               {isPending ? <Spinner /> : "Create document"}
             </Button>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="flex-1 sm:flex-none">
               <Link href={`/spaces/${spaceId}`}>Cancel</Link>
             </Button>
           </div>

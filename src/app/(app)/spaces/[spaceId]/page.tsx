@@ -50,7 +50,7 @@ export default async function SpacePage({
   return (
     <div className="h-full flex flex-col">
       {/* Space header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 md:mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <FolderIcon className="w-7 h-7 shrink-0 text-chart-2" />
@@ -64,7 +64,7 @@ export default async function SpacePage({
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Button variant="outline" asChild>
             <Link href={`/spaces/${spaceId}/questions`}>
               <PlusIcon className="w-3.5 h-3.5" />
@@ -80,10 +80,10 @@ export default async function SpacePage({
         </div>
       </div>
 
-      <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
         <div className="flex-1 flex flex-col min-h-0">
           {/* Stats */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          <div className="grid grid-cols-2 gap-3 mb-6 md:mb-8">
             <Card>
               <CardHeader>
                 <CardTitle>{docs.length}</CardTitle>
@@ -98,7 +98,7 @@ export default async function SpacePage({
             </Card>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 grid-rows-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0 md:grid-rows-1">
             {/* Documents */}
             <div className="flex flex-col min-h-0">
               <div className="flex items-center justify-between mb-3 shrink-0">
@@ -232,7 +232,7 @@ export default async function SpacePage({
             </div>
           </div>
         </div>
-        <aside className="w-64 shrink-0">
+        <aside className="hidden lg:block w-64 shrink-0">
           <ExpertPanel title={`Top Experts In ${space?.name}`} experts={experts} />
         </aside>
       </div>

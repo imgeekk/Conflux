@@ -81,13 +81,13 @@ export default function MembersPage() {
 
   if (workspace?.role !== "OWNER") {
     return (
-      <div className="w-2xl mx-auto pt-16 text-center text-sm text-muted-foreground">
+      <div className="w-full max-w-2xl mx-auto pt-16 text-center text-sm text-muted-foreground">
         Only the workspace owner can manage members.
       </div>
     );
   }
   return (
-    <div className="w-2xl mx-auto flex flex-col gap-6">
+    <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
       <div className="flex items-center gap-2">
         <UsersThreeIcon className="w-6 h-6 text-chart-2" />
         <h1 className="text-xl font-semibold">Members</h1>
@@ -141,8 +141,8 @@ export default function MembersPage() {
           <CardDescription>Share a link or code to add members</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <div className="flex items-end gap-2">
-            <div className="flex w-24 flex-col gap-1">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-2">
+            <div className="flex w-full sm:w-24 flex-col gap-1">
               <label htmlFor="max-uses" className="text-xs font-medium text-muted-foreground">
                 Max uses
               </label>
@@ -174,9 +174,10 @@ export default function MembersPage() {
             invites.map((inv) => (
               <div
                 key={inv.id}
-                className="flex items-center gap-2 border border-border p-2"
+                className="flex flex-col sm:flex-row sm:items-center gap-2 border border-border p-2"
               >
-                <code className="flex-1 text-xs">{inv.code}</code>
+                <code className="flex-1 text-xs truncate">{inv.code}</code>
+                <div className="flex items-center gap-2 shrink-0">
                 <span className="text-xs text-muted-foreground">
                   {inv.uses}/{inv.maxUses ?? "∞"} used
                 </span>
@@ -197,6 +198,7 @@ export default function MembersPage() {
                     Revoke
                   </Button>
                 )}
+                </div>
               </div>
             ))
           )}

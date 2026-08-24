@@ -97,7 +97,7 @@ export default function QuestionDetailPage() {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   return (
-    <div className="flex flex-col flex-1 w-4xl mx-auto">
+    <div className="flex flex-col flex-1 w-full max-w-4xl mx-auto">
       {/* Header */}
       <div className="shrink-0 pt-1 pb-3">
         <Button variant="ghost" asChild size="sm">

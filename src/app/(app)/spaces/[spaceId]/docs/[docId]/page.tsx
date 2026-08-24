@@ -32,7 +32,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
   if (!member) notFound();
 
   return (
-    <div className="w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <Link
           href={`/spaces/${spaceId}`}
@@ -52,7 +52,7 @@ export default async function DocViewPage({ params }: { params: Params }) {
 
       <h1 className="text-3xl font-semibold mb-3">{doc.title}</h1>
 
-      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-6 md:mb-8">
         <span className="flex items-center gap-1.5">
           <UserIcon className="w-3.5 h-3.5" />
           {doc.author.name}
