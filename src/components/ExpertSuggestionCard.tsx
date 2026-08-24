@@ -5,7 +5,7 @@ interface ExpertSuggestionCardProps {
 
 export function ExpertSuggestionCard({ expert }: ExpertSuggestionCardProps) {
     return (
-        <div className="flex items-center gap-2.5 border border-border rounded p-3">
+        <div className="flex items-center gap-2.5 pb-3">
             {expert.image ? (
                 <img
                     src={expert.image}
@@ -13,7 +13,7 @@ export function ExpertSuggestionCard({ expert }: ExpertSuggestionCardProps) {
                     className="size-8 rounded-full shrink-0"
                 />
             ) : (
-                <div className="size-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
+                <div className="size-8 rounded-full bg-chart-2/10 flex items-center justify-center text-xs font-medium shrink-0">
                     {expert.name.charAt(0).toUpperCase()}
                 </div>
             )}
