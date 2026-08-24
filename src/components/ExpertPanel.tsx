@@ -7,7 +7,16 @@ export function ExpertPanel({
   title: string;
   experts: ApiExpertSummary[];
 }) {
-  if (experts.length === 0) return null;
+  if (experts.length === 0) return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex items-center justify-center text-xs text-muted-foreground">
+        No experts yet
+      </CardContent>
+    </Card>
+  );
   return (
     <Card className="h-full">
       <CardHeader>
@@ -24,7 +33,7 @@ export function ExpertPanel({
                 className="size-7 rounded-full shrink-0"
               />
             ) : (
-              <div className="size-7 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
+              <div className="size-7 rounded-full bg-chart-2/10 flex items-center justify-center text-xs font-medium shrink-0">
                 {e.name.charAt(0).toUpperCase()}
               </div>
             )}
