@@ -73,7 +73,7 @@ export default function EditDocPage() {
           Back to document
         </Link>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <input
             type="text"
             name="title"
@@ -93,32 +93,31 @@ export default function EditDocPage() {
             }}
             placeholder="Write your document..."
           />
-          <div className="flex flex-col sm:flex-row sm:items-start gap-4 pt-1">
-            <div className="flex-1">
-              <label className="text-sm text-muted-foreground mb-1.5 block">
-                Tags
-              </label>
-              <TagPicker
-                selectedIds={selectedTagIds}
-                onChange={(ids) => {
-                  setSelectedTagIds(ids);
-                  setChanged(true);
-                }}
-              />
 
-            </div>
-            <div className="flex gap-3 shrink-0 sm:mt-6.5">
-              <Button
-                type="submit"
-                disabled={isPending || !changed}
-                className="w-26"
-              >
-                {isPending ? <Spinner /> : "Save changes"}
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href={`/spaces/${spaceId}/docs/${docId}`}>Cancel</Link>
-              </Button>
-            </div>
+          <div className="border-t border-border pt-4">
+            <label className="text-xs font-medium text-muted-foreground mb-2 block uppercase tracking-wider">
+              Tags
+            </label>
+            <TagPicker
+              selectedIds={selectedTagIds}
+              onChange={(ids) => {
+                setSelectedTagIds(ids);
+                setChanged(true);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
+            <Button variant="ghost" asChild>
+              <Link href={`/spaces/${spaceId}/docs/${docId}`}>Cancel</Link>
+            </Button>
+            <Button
+              type="submit"
+              disabled={isPending || !changed}
+              className="w-28"
+            >
+              {isPending ? <Spinner /> : "Save changes"}
+            </Button>
           </div>
         </form>
       </div>
