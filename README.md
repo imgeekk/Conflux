@@ -12,7 +12,7 @@ persistent Q&A, and automatic expert discovery.
 
 [Live Demo](https://conflux.vercel.app) · [Quick Start](#quick-start) · [How it works](#how-it-works)
 
-![Conflux](./docs/screenshot.png)
+<img width="3600" height="2025" alt="Conflux landing page" src="https://github.com/user-attachments/assets/93191b13-a608-4f25-8cd8-d15107a94c23" />
 
 </div>
 
