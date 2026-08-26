@@ -20,8 +20,35 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Conflux",
-  description: "",
+  title: {
+    default: "Conflux - The Knowledge Base for Teams",
+    template: "%s | Conflux",
+  },
+  description:
+    "Conflux is a collaborative knowledge base for teams. Ask questions, share answers, and build a living wiki across every workspace.",
+  openGraph: {
+    title: "Conflux - The Knowledge Base for Teams",
+    description:
+      "Conflux is a collaborative knowledge base for teams. Ask questions, share answers, and build a living wiki across every workspace.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Conflux — The Knowledge Base for Teams",
+      },
+    ],
+    siteName: "Conflux",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Conflux — The Knowledge Base for Teams",
+    description:
+      "Conflux is a collaborative knowledge base for teams. Ask questions, share answers, and build a living wiki across every workspace.",
+    images: ["/og.png"],
+  },
+  metadataBase: new URL("https://conflux.so"),
 };
 
 export default function RootLayout({
