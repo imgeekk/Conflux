@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
 import {
   Sidebar as SidebarPrimitive,
   SidebarHeader,
@@ -32,6 +32,7 @@ import { Skeleton } from "./ui/skeleton";
 export default function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session } = useSession();
   const { workspace } = useWorkspace();
   const { data: spaces = [], isLoading } = useSpaces(workspace?.id ?? "");
 
@@ -128,6 +129,25 @@ export default function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        {session?.user && (
+          <div className="flex items-center gap-2.5 px-2 py-2">
+            {session.user.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={session.user.image}
+                alt={session.user.name}
+                className="size-7 rounded-full shrink-0"
+              />
+            ) : (
+              <div className="size-7 rounded-full bg-chart-2/10 flex items-center justify-center text-xs font-medium shrink-0">
+                {session.user.name?.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="truncate text-xs font-medium text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+              {session.user.name}
+            </span>
+          </div>
+        )}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Settings">
