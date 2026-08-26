@@ -22,9 +22,18 @@ import {
   UsersThreeIcon,
   PlusIcon,
   TrashIcon,
-  CopyIcon,
+  LinkIcon,
+  HashIcon,
+  XIcon,
 } from "@phosphor-icons/react";
 import Loader from "@/components/Loader";
+
+function getInviteStatus(invite: { revoked: boolean; expiresAt: string | null; maxUses: number | null; uses: number }) {
+  if (invite.revoked) return { label: "Revoked", color: "text-muted-foreground bg-muted" as const };
+  if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) return { label: "Expired", color: "text-orange-600 bg-orange-50 dark:bg-orange-950" as const };
+  if (invite.maxUses !== null && invite.uses >= invite.maxUses) return { label: "Fully used", color: "text-destructive bg-destructive/10" as const };
+  return { label: "Active", color: "text-chart-2 bg-chart-2/10" as const };
+}
 export default function MembersPage() {
   const { data: session } = useSession();
   const { workspace } = useWorkspace();
@@ -53,6 +62,7 @@ export default function MembersPage() {
           const link = `${window.location.origin}/join?code=${invite.code}`;
           navigator.clipboard.writeText(link);
           setCopiedId(invite.id);
+          setTimeout(() => setCopiedId(null), 2000);
         },
       },
     );
@@ -62,6 +72,7 @@ export default function MembersPage() {
       `${window.location.origin}/join?code=${code}`,
     );
     setCopiedId(inviteId);
+    setTimeout(() => setCopiedId(null), 2000);
   }
   if (isLoading) {
     return (
@@ -171,36 +182,71 @@ export default function MembersPage() {
           {invites.length === 0 ? (
             <p className="text-xs text-muted-foreground">No invites yet.</p>
           ) : (
-            invites.map((inv) => (
-              <div
-                key={inv.id}
-                className="flex flex-col sm:flex-row sm:items-center gap-2 border border-border p-2"
-              >
-                <code className="flex-1 text-xs truncate">{inv.code}</code>
-                <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs text-muted-foreground">
-                  {inv.uses}/{inv.maxUses ?? "∞"} used
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleCopy(inv.id, inv.code)}
+            invites.map((inv) => {
+              const status = getInviteStatus(inv);
+              const isActive = !inv.revoked && !(inv.expiresAt && new Date(inv.expiresAt) < new Date()) && !(inv.maxUses !== null && inv.uses >= inv.maxUses);
+              return (
+                <div
+                  key={inv.id}
+                  className={`flex flex-col gap-2 border p-3 ${inv.revoked ? 'border-border/50 bg-muted/30 opacity-60' : 'border-border'}`}
                 >
-                  <CopyIcon className="w-3.5 h-3.5" />
-                  {copiedId === inv.id ? "Copied" : "Copy Link"}
-                </Button>
-                {!inv.revoked && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => revokeInvite(inv.id)}
-                  >
-                    Revoke
-                  </Button>
-                )}
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-xs truncate">{inv.code}</code>
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 ${status.color}`}>
+                      {status.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      {inv.uses}/{inv.maxUses ?? "∞"} uses
+                    </span>
+                    {inv.expiresAt && (
+                      <span className="text-xs text-muted-foreground">
+                        · Expires {new Date(inv.expiresAt).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isActive ? (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCopy(inv.id, inv.code)}
+                        >
+                          <LinkIcon className="w-3.5 h-3.5" />
+                          {copiedId === inv.id ? "Copied!" : "Copy Link"}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(inv.code);
+                            setCopiedId(inv.id);
+                            setTimeout(() => setCopiedId(null), 2000);
+                          }}
+                        >
+                          <HashIcon className="w-3.5 h-3.5" />
+                          {copiedId === inv.id ? "Copied!" : "Copy Code"}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => revokeInvite(inv.id)}
+                        >
+                          <XIcon className="w-3.5 h-3.5" />
+                          Revoke
+                        </Button>
+                      </>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        {inv.revoked ? 'This invite has been revoked' : 'This invite is no longer valid'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </CardContent>
       </Card>
