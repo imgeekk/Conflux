@@ -4,7 +4,7 @@ import { decryptApiKey } from "./crypto";
 
 const defaultClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export const answeringModel = "gemini-2.5-flash-lite";
+export const answeringModel = "gemini-3.5-flash-lite";
 export const embeddingModel = "gemini-embedding-001";
 
 async function getClient(workspaceId?: string) {
