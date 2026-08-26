@@ -81,6 +81,7 @@ model Workspace {
   spaces    Space[]
   invites   Invite[]
   usage     UsageRecord[]
+  tags      Tag[]
 }
 
 model UsageRecord {
@@ -190,12 +191,16 @@ model Answer {
 }
 
 model Tag {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  name        String
+  workspaceId String
+  createdAt   DateTime @default(now())
 
-  documents     DocumentTag[]
-  expertScores  ExpertScore[]
+  workspace    Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  documents    DocumentTag[]
+  expertScores ExpertScore[]
+
+  @@unique([workspaceId, name])
 }
 
 model DocumentTag {
