@@ -36,7 +36,7 @@ import {
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "https://github.com", label: "GitHub", external: true },
+  { href: "https://github.com/imgeekk/Conflux", label: "GitHub", external: true },
 ];
 
 const PROBLEMS = [
@@ -235,7 +235,7 @@ export default function LandingPage() {
                   </Button>
                 </Link>
                 <Link
-                  href="https://github.com"
+                  href="https://github.com/imgeekk/Conflux"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -740,7 +740,7 @@ export default function LandingPage() {
                     </Button>
                   </Link>
                   <a
-                    href="https://github.com"
+                    href="https://github.com/imgeekk/Conflux"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -767,23 +767,23 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-4 text-[11px] text-muted-foreground/60">
             <a
-              href="https://github.com"
+              href="https://github.com/imgeekk/Conflux"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
               GitHub
             </a>
-            <a href="#" className="hover:text-foreground transition-colors">
+            {/* <a href="#" className="hover:text-foreground transition-colors">
               Documentation
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
               Report a bug
-            </a>
+            </a> */}
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-6 flex items-center justify-center pt-6 text-[11px] text-muted-foreground">
-          Built with 🧠 by<Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-chart-4 transition-colors">&nbsp;Maniac</Link>
+          Built with 🧠 by<Link href="https://github.com/imgeekk" target="_blank" rel="noopener noreferrer" className="hover:text-chart-4 transition-colors">&nbsp;Maniac</Link>
         </div>
       </footer>
     </div>
