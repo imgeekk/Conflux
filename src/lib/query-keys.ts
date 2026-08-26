@@ -18,7 +18,7 @@ export const queryKeys = {
     byId: (questionId: string) => ["question", questionId] as const,
   },
   tags: {
-    all: ["tags"] as const,
+    all: (workspaceId: string) => ["tags", workspaceId] as const,
   },
   experScores: {
     byTag: (tagId: string) => ["experScores", "tag", tagId] as const,

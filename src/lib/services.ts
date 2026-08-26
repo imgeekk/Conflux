@@ -507,16 +507,17 @@ export async function updateAnswer(
 
 // tag services
 
-export async function getTags() {
+export async function getTags(workspaceId: string) {
   const tags = await prisma.tag.findMany({
+    where: { workspaceId },
     orderBy: { name: "asc" },
   });
   return tags;
 }
 
-export async function createTag(name: string) {
+export async function createTag(name: string, workspaceId: string) {
   const tag = await prisma.tag.create({
-    data: { name: name.trim() },
+    data: { name: name.trim(), workspaceId },
   });
   return tag;
 }

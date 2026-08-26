@@ -5,15 +5,16 @@ import {
   createTag,
 } from "@/lib/services";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await requireSession();
-
-    const tags = await getTags();
-    if (!tags) {
-      return NextResponse.json({ error: "No tags found" }, { status: 404 });
+    const { searchParams } = new URL(req.url);
+    const workspaceId = searchParams.get("workspaceId");
+    if (!workspaceId) {
+      return NextResponse.json({ error: "Missing workspaceId" }, { status: 400 });
     }
 
+    const tags = await getTags(workspaceId);
     return NextResponse.json(tags);
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,17 +23,17 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await requireSession();
-    const { name } = await req.json();
-    if (!name?.trim()) {
+    const { name, workspaceId } = await req.json();
+    if (!name?.trim() || !workspaceId) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const tag = await createTag(name);
+    const tag = await createTag(name, workspaceId);
     return NextResponse.json(tag, { status: 201 });
   } catch (error: any) {
     if (error?.code === "P2002") {
       return NextResponse.json(
-        { error: "Tag already exists" },
+        { error: "Tag already exists in this workspace" },
         { status: 409 },
       );
     }

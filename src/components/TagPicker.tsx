@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PlusIcon, XIcon } from "@phosphor-icons/react";
 import { useTags, useCreateTag } from "@/hooks/use-tags";
+import { useWorkspace } from "@/lib/workspace-context";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
 
@@ -11,8 +12,10 @@ export function TagPicker({
   selectedIds: string[];
   onChange: (ids: string[]) => void;
 }) {
-  const { data: tags = [] } = useTags();
-  const { mutate: createTag } = useCreateTag();
+  const { workspace } = useWorkspace();
+  const workspaceId = workspace?.id ?? "";
+  const { data: tags = [] } = useTags(workspaceId);
+  const { mutate: createTag } = useCreateTag(workspaceId);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
