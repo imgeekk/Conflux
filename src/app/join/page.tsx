@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 import Loader from "@/components/Loader";
+import { Spinner } from "@/components/ui/spinner";
 function JoinForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -58,7 +59,7 @@ function JoinForm() {
       </div>
       {error && <p className="text-xs text-destructive">{error}</p>}
       <Button type="submit" disabled={joining || !code.trim()}>
-        {joining ? "Joining..." : "Join workspace"}
+        {joining ? <Spinner className="w-4 h-4" /> : "Join workspace"}
       </Button>
     </form>
   );

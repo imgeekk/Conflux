@@ -96,7 +96,7 @@ export default function Page() {
               </p>
             )}
             <div className="flex gap-3 pt-1">
-              <Button type="submit" disabled={isPending || !workspace} className="w-20">
+              <Button type="submit" disabled={isPending || !workspace} className="w-23">
                 {isPending ? <Spinner className="w-3.5 h-3.5" /> : "Create space"}
               </Button>
               <Button variant="outline" asChild>

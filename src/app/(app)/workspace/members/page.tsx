@@ -156,7 +156,7 @@ export default function MembersPage() {
                 title="Leave empty for unlimited"
               />
             </div>
-            <Button onClick={handleGenerate} disabled={creating || !maxUsesValid}>
+            <Button onClick={handleGenerate} disabled={creating || !maxUsesValid} className="w-35">
               {creating ? (
                 <Spinner className="w-3.5 h-3.5" />
               ) : (
