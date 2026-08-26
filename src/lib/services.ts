@@ -308,6 +308,20 @@ export async function getQuestionsBySpaceId(spaceId: string) {
   return questions;
 }
 
+export async function getQuestionsByWorkspaceId(workspaceId: string) {
+  const questions = await prisma.question.findMany({
+    where: { space: { workspaceId } },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    include: {
+      author: true,
+      space: true,
+      answers: true,
+    },
+  });
+  return questions; 
+}
+
 export async function createQuestion(
   text: string,
   spaceId: string,

@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   HouseIcon,
-  MagnifyingGlassIcon,
   QuestionIcon,
   PlusIcon,
   GearIcon,
@@ -38,8 +37,7 @@ export default function AppSidebar() {
 
   const navItems = [
     { href: "/home", label: "Home", icon: HouseIcon },
-    { href: "/search", label: "Search", icon: MagnifyingGlassIcon },
-    { href: "/questions", label: "Questions", icon: QuestionIcon },
+    { href: "/questions", label: "All Questions", icon: QuestionIcon },
     { href: "/workspace/members", label: "Members", icon: UsersThreeIcon },
   ];
 
