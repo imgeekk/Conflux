@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "Conflux is a collaborative knowledge base for teams. Ask questions, share answers, and build a living wiki across every workspace.",
     images: ["/og.png"],
   },
-  metadataBase: new URL("https://conflux.so"),
+  metadataBase: new URL("https://conflux-v0.vercel.app"),
 };
 
 export default function RootLayout({
