@@ -201,7 +201,7 @@ export default function QuestionsPage() {
                 placeholder="Ask a question..."
                 rows={3}
                 maxLength={500}
-                disabled={isPending}
+                disabled={isPending || isLoading}
                 className="resize-none pr-12"
               />
             </BorderBeam>
@@ -209,7 +209,7 @@ export default function QuestionsPage() {
               type="submit"
               size="icon"
               className="absolute bottom-1.5 right-1.5"
-              disabled={isPending || !text.trim()}
+              disabled={isPending || isLoading || !text.trim()}
             >
               {isPending ? (
                 <Spinner className="w-4 h-4" />
