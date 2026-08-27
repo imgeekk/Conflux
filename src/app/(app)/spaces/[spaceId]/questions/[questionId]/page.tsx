@@ -238,7 +238,11 @@ export default function QuestionDetailPage() {
                                   onClick={() => handleAccept(answer.id)}
                                   disabled={isAccepting}
                                 >
-                                  <CheckCircleIcon className="w-3.5 h-3.5" />
+                                  {isAccepting ? (
+                                    <Spinner className="w-3.5 h-3.5" />
+                                  ) : (
+                                    <CheckCircleIcon className="w-3.5 h-3.5" />
+                                  )}
                                   Accept
                                 </Button>
                               )}
